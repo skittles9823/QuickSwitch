@@ -41,6 +41,10 @@ Quickstep Switcher is a magisk module which systemlessly enables Pie recents (Qu
 - [The Hyperion team](https://play.google.com/store/apps/details?id=projekt.launcher), for helping test Quickstep Switcher.
 
 ## Changelog:
+### v1.0.3
+- fix late-start script (uninstalling anyway the user wants actually works now)
+- fix derp in config.sh
+
 ### v1.0.2
 - updated QuickstepSwitcher app (improved info and fixed theme bugs)
 - fixed switching providers not working (Android dir handling is dumb af)

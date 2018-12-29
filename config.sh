@@ -71,7 +71,7 @@ print_modname() {
   ui_print "         _____       "
   ui_print "     __ |     | __   "
   ui_print "    |  ||     ||  |  "
-  ui_print ".   |  ||     ||  |  "
+  ui_print "    |  ||     ||  |  "
   ui_print "    |__||     ||__|  "
   ui_print "        |_____|      "
   ui_print "   Quickstep Switcher"
