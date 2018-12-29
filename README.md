@@ -30,7 +30,7 @@ Quickstep Switcher is a magisk module which systemlessly enables Pie recents (Qu
 - If you have any issues, please join the [Telegram group](https://t.me/QuickstepSwitcherSupport) and send the logs along with what your issue is.
 
 ## Sources and used/needed tools:
-- [Module Source](https://github.com/LawnchairLauncher/LawnstepModule)
+- [Module Source](https://github.com/Skittles9823/QuickstepSwitcher)
 - [Unity](https://github.com/Zackptg5/Unity) by [Zackptg5](https://github.com/Zackptg5)
 - [Magisk](https://github.com/topjohnwu/Magisk) by [topjohnwu](https://forum.xda-developers.com/member.php?u=4470081)
 - [Magisk Module Template](https://github.com/topjohnwu/magisk-module-template) by [topjohnwu](https://forum.xda-developers.com/member.php?u=4470081)
