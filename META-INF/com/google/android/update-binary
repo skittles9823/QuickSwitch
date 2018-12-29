@@ -1,0 +1,30 @@
+#!/sbin/sh
+##########################################################################################
+#
+# Unity Installer
+# by ahrion & zackptg5
+#
+##########################################################################################
+
+# Temp Installer Path
+export TMPDIR=/dev/tmp; export INSTALLER=$TMPDIR/install; export OUTFD=$2; export ZIP=$3
+
+# Default Permissions
+umask 022
+
+# Initial Cleanup
+rm -rf $TMPDIR 2>/dev/null
+mkdir -p $INSTALLER
+
+# Extract Unityfiles
+unzip -o "$ZIP" 'common/unityfiles.tar.gz' -d $INSTALLER >&2
+[ -f "$INSTALLER/common/unityfiles.tar.gz" ] || { echo "! Unable to extract zip file !"; exit 1; }
+
+# Load Util_Functions, Add In-House Binaries to PATH, Start Bash Shell
+ARCH32=`getprop ro.product.cpu.abi | cut -c-3`
+[ -z $ARCH32 ] && ARCH32=`getprop ro.product.cpu.abi2 | cut -c-3`
+[ -z $ARCH32 ] && ARCH32=arm
+(tar -xf $INSTALLER/common/unityfiles.tar.gz -C $INSTALLER/common) || { echo "! Unable to extract unity files !"; exit 1; }
+chmod -R 755 $INSTALLER/common/unityfiles/$ARCH32
+echo $PATH | grep -q "$INSTALLER/common/unityfiles/$ARCH32" || export PATH=$INSTALLER/common/unityfiles/$ARCH32:$PATH
+bash $INSTALLER/common/unityfiles/util_functions.sh
