@@ -1,5 +1,5 @@
-# Quickstep Switcher - Quickstep enabler for any supported launcher
-Quickstep Switcher is a magisk module which systemlessly enables Pie recents (Quickstep) in any supported launcher
+# QuickSwitch - Quickstep enabler for any supported launcher
+QuickSwitch is a magisk module which systemlessly enables Pie recents (Quickstep) in any supported launcher
 
 ## Donations:
 - If you wish to donate to [Paphonb](https://github.com/paphonb) for creating the QuickstepSwitcher app you can do so [here](https://paypal.me/Paphonb).
@@ -37,10 +37,14 @@ Quickstep Switcher is a magisk module which systemlessly enables Pie recents (Qu
 
 ## Thanks to
 - [Paphonb](https://github.com/paphonb), for being the main brains behind the modules, creating the app, and much more.
-- [The Lawnchair team](https://t.me/lawnchairci), for testing Quickstep Switcher.
-- [The Hyperion team](https://play.google.com/store/apps/details?id=projekt.launcher), for helping test Quickstep Switcher.
+- [The Lawnchair team](https://t.me/lawnchairci), for testing QuickSwitch.
+- [The Hyperion team](https://play.google.com/store/apps/details?id=projekt.launcher), for helping test QuickSwitch.
 
 ## Changelog:
+### v1.0.5
+- rename to QuickSwitch
+- begin troubleshooting /product/overlay installs
+
 ### v1.0.4
 - fix app having issues acquiring root
 

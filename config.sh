@@ -68,15 +68,15 @@ unity_custom() {
 print_modname() {
   # @Skittles9823 made this ascii and is way to proud of it
   ui_print " "
-  ui_print "         _____       "
-  ui_print "     __ |     | __   "
-  ui_print "    |  ||     ||  |  "
-  ui_print "    |  ||     ||  |  "
-  ui_print "    |__||     ||__|  "
-  ui_print "        |_____|      "
-  ui_print "   Quickstep Switcher"
-  ui_print "                     "
-  ui_print "   The Lawnchair Team"
+  ui_print "       _____       "
+  ui_print "   __ |     | __   "
+  ui_print "  |  ||     ||  |  "
+  ui_print "  |  ||     ||  |  "
+  ui_print "  |__||     ||__|  "
+  ui_print "      |_____|      "
+  ui_print "    QuickSwitch    "
+  ui_print "                   "
+  ui_print " The Lawnchair Team"
   ui_print " "
 }
 

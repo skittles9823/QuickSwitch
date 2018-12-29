@@ -14,3 +14,10 @@ if $MAGISK; then
     rm /data/resource-cache/overlays.list
   fi
 fi
+if [ -d "/product/overlay" ]; then
+  if [ -f "$UNITY$VEN/overlay/QuickstepSwitcherOverlay.apk" ]; then
+    cp $UNITY$VEN/overlay/QuickstepSwitcherOverlay.apk /product/overlayQuickstepSwitcherOverlay.apk
+    chmod 644 /product/overlay/QuickstepSwitcherOverlay.apk
+    rm $UNITY$VEN/overlay/QuickstepSwitcherOverlay.apk
+  fi
+fi
