@@ -17,11 +17,12 @@ Quickstep Switcher is a magisk module which systemlessly enables Pie recents (Qu
 - Android 9.0 Pie
 
 ## Installation
-1. Flash this module.
-2. Open the Quickstep Switcher app that was installed.
-3. Select a different launcher as your recents provider.
-4. Reboot.
-5. Profit.
+1. Remove any other quickstep enabling modules (Lawnstep, etc)
+2. Flash this module.
+3. Open the Quickstep Switcher app that was installed.
+4. Select a different launcher as your recents provider.
+5. Reboot.
+6. Profit.
 
 ## Debugging
 - The boot scripts will save logs to /cache whenever it detects the user wants to switch providers
