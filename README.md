@@ -13,13 +13,13 @@ QuickSwitch is a magisk module which systemlessly enables Pie recents (Quickstep
 - Hyperion is currently unavailable as a recents provider as it's implementation is not stable enough. Please be patient and wait for an update regarding this.
 
 ## Requirements:
-- Magisk 17+ (Rootless installs are currently broken, try at your own risk)
+- Magisk 17+ (Or TWRP and an unlocked bootloader with init.d support for a rootless install)
 - Android 9.0 Pie
 
 ## Installation
-1. Remove any other quickstep enabling modules (Lawnstep, etc)
-2. Flash this module.
-3. Open the Quickstep Switcher app that was installed.
+1. Flash this module.
+2. Reboot.
+3. Open the QuickSwitch app that was installed.
 4. Select a different launcher as your recents provider.
 5. Reboot.
 6. Profit.
