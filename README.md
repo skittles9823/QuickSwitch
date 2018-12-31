@@ -41,6 +41,9 @@ QuickSwitch is a magisk module which systemlessly enables Pie recents (Quickstep
 - [The Hyperion team](https://play.google.com/store/apps/details?id=projekt.launcher), for helping test QuickSwitch.
 
 ## Changelog:
+### v1.0.7
+- fix uninstallation of Lawnstep
+
 ### v1.0.6
 - Unity 2.3 update
 - bring back rootless installs
