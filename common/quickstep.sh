@@ -1,6 +1,3 @@
-#!/system/bin/sh
-MAGISK=<MAGISK>
-MODID=<MODID>
 # Start logging
 set -x 2>/cache/$MODID-service.log
 # The user can uninstall however they like. Yeet.png
