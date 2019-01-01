@@ -1,10 +1,5 @@
 # This script will be executed in post-fs-data mode
 # More info in the main Magisk thread
-# Function to check if product is mounted
-is_mounted() {
-  cat /proc/mounts | grep -q " `readlink -f $1` " 2>/dev/null
-  return $?
-}
 # Start logging
 set -x 2>/cache/$MODID.log
 
@@ -12,10 +7,19 @@ set -x 2>/cache/$MODID.log
 SWITCHER_DIR=/data/user_de/0/xyz.paphonb.quickstepswitcher
 SWITCHER_OUTPUT=$SWITCHER_DIR/files
 
+# Delete lastBoot so QuickSwitch knows the script initiated.
+rm $SWITCHER_OUTPUT/lastBoot
+
+# Function to check if product is mounted
+is_mounted() {
+  cat /proc/mounts | grep -q " `readlink -f $1` " 2>/dev/null
+  return $?
+}
+
 # Check if user wants to switch Quickstep provider
-if [ -f "$SWITCHER_OUTPUT/QuickstepSwitcherOverlay.apk" ]; then
+if [ -f "$SWITCHER_OUTPUT/lastChange" ]; then
   # Assign $STEPDIR var
-  if [ -d /product/overlay ]; then
+  if [ -f "$SWITCHER_OUTPUT/isProduct" ]; then
     STEPDIR=/product/overlay
     # Try to mount /product
     is_mounted /product || mount /product
@@ -44,10 +48,10 @@ if [ -f "$SWITCHER_OUTPUT/QuickstepSwitcherOverlay.apk" ]; then
   # Delete old provider dir
   rm -rf $SYSTEMIZE_TARGET/QuickstepSwitcher*
   # Copy needed files to module dir
-  cp -rf $SWITCHER_OUTPUT/privapp-permissions-quickstepswitcher.xml $PERMISSIONXML
-  cp -rf $SWITCHER_OUTPUT/quickstepswitcher-hiddenapi-package-whitelist.xml $WHITELISTXML
-  cp -rf $SWITCHER_OUTPUT/QuickstepSwitcherOverlay.apk $OVERLAY
-  cp -rf $SWITCHER_OUTPUT/systemize/* $SYSTEMIZE_TARGET
+  cp -rf $SWITCHER_OUTPUT/output/privapp-permissions-quickstepswitcher.xml $PERMISSIONXML
+  cp -rf $SWITCHER_OUTPUT/output/quickstepswitcher-hiddenapi-package-whitelist.xml $WHITELISTXML
+  cp -rf $SWITCHER_OUTPUT/output/QuickstepSwitcherOverlay.apk $OVERLAY
+  cp -rf $SWITCHER_OUTPUT/output/systemize/* $SYSTEMIZE_TARGET
   rm -rf $SWITCHER_DIR/shared_prefs/tmp.xml
 
   # Set perms
@@ -57,7 +61,9 @@ if [ -f "$SWITCHER_OUTPUT/QuickstepSwitcherOverlay.apk" ]; then
 
   # Delete possible bootloop causing file and QuickstepSwitcher created files
   rm /data/resource-cache/overlays.list
-  rm -rf $SWITCHER_OUTPUT/*
+  if [ -f "$OVERLAY" ]; then
+    rm -rf $SWITCHER_OUTPUT/lastChange
+  fi
 
   # Logging for days
   cp -rf /cache/$MODID.log /cache/$MODID-old.log

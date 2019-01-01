@@ -1,6 +1,3 @@
-#!/system/bin/sh
-MAGISK=<MAGISK>
-MODID=<MODID>
 # Start logging
 set -x 2>/cache/$MODID-service.log
 # The user can uninstall however they like. Yeet.png
@@ -14,10 +11,15 @@ if $MAGISK; then
     rm /data/resource-cache/overlays.list
   fi
 fi
-if [ -d "/product/overlay" ]; then
-  if [ -f "$UNITY$VEN/overlay/QuickstepSwitcherOverlay.apk" ]; then
-    cp $UNITY$VEN/overlay/QuickstepSwitcherOverlay.apk /product/overlayQuickstepSwitcherOverlay.apk
+# Assign vars
+SWITCHER_DIR=/data/user_de/0/xyz.paphonb.quickstepswitcher
+SWITCHER_OUTPUT=$SWITCHER_DIR/files
+if [ -f "$SWITCHER_OUTPUT/isProduct" ]; then
+  if [ -f "$SWITCHER_OUTPUT/output/QuickstepSwitcherOverlay.apk" ]; then
+    cp -rf $SWITCHER_OUTPUT/output/QuickstepSwitcherOverlay.apk /product/overlay/QuickstepSwitcherOverlay.apk
     chmod 644 /product/overlay/QuickstepSwitcherOverlay.apk
-    rm $UNITY$VEN/overlay/QuickstepSwitcherOverlay.apk
+    if [ -f "/product/overlay/QuickstepSwitcherOverlay.apk" ]; then
+      rm -rf $SWITCHER_OUTPUT/lastChange
+    fi
   fi
 fi
