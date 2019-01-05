@@ -6,6 +6,7 @@ set -x 2>/cache/$MODID.log
 # Assign vars
 SWITCHER_DIR=/data/user_de/0/xyz.paphonb.quickstepswitcher
 SWITCHER_OUTPUT=$SWITCHER_DIR/files
+DID_MOUNT_RW=
 
 # Delete lastBoot so QuickSwitch knows the script initiated.
 rm $SWITCHER_OUTPUT/lastBoot
@@ -16,6 +17,22 @@ is_mounted() {
   return $?
 }
 
+is_mounted_rw() {
+  cat /proc/mounts | grep -q " `readlink -f $1` " | grep -q " rw," 2>/dev/null
+  return $?
+}
+
+mount_rw() {
+  mount -o remount,rw $1
+  DID_MOUNT_RW=1
+}
+
+unmount_rw() {
+  if [ "x$DID_MOUNT_RW" = "x$1" ]; then
+    mount -o remount,ro $1
+  fi
+}
+
 # Check if user wants to switch Quickstep provider
 if [ -f "$SWITCHER_OUTPUT/lastChange" ]; then
   # Assign $STEPDIR var
@@ -23,6 +40,7 @@ if [ -f "$SWITCHER_OUTPUT/lastChange" ]; then
     STEPDIR=/product/overlay
     # Try to mount /product
     is_mounted /product || mount /product
+    is_mounted_rw /product || mount_rw /product
   else
     if $MAGISK; then
       STEPDIR=$UNITY/system/vendor/overlay
@@ -58,6 +76,8 @@ if [ -f "$SWITCHER_OUTPUT/lastChange" ]; then
   if $MAGISK; then chmod -R a=r,u+w,a+X $UNITY$SYS; fi
   chmod 644 $OVERLAY
   if [ $STEPDIR == "$UNITY/system/vendor/overlay" ]; then chown 0:2000 $STEPDIR; fi
+
+  unmount_rw /product
 
   # Delete possible bootloop causing file and QuickstepSwitcher created files
   rm /data/resource-cache/overlays.list
