@@ -24,7 +24,7 @@ is_mounted_rw() {
 
 mount_rw() {
   mount -o remount,rw $1
-  DID_MOUNT_RW=1
+  DID_MOUNT_RW=$1
 }
 
 unmount_rw() {
