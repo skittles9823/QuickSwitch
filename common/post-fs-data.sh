@@ -54,6 +54,7 @@ if [ -f "$SWITCHER_OUTPUT/reset" ]; then
   rm -rf $SWITCHER_OUTPUT/output/*
   rm -rf $SWITCHER_OUTPUT/lastChange
   rm -rf $SWITCHER_OUTPUT/reset
+  rm /data/resource-cache/overlays.list
   unmount_rw /product
 fi
 
