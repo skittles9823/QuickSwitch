@@ -45,6 +45,7 @@ QuickSwitch is a magisk module which systemlessly enables Pie recents (Quickstep
 - more /product/overlay fix attempts
 - fix the bootscript error appearing even though the bootscript successfully ran
 - add a warning when setting a systemized launcher as the recents provider
+- add a way to reset the recents provider back to stock
 
 ### v1.0.8
 - add debugging to the QuickSwitch app so its more user-friendly

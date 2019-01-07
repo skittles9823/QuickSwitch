@@ -32,8 +32,32 @@ unmount_rw() {
     mount -o remount,ro $1
   fi
 }
+# Check if user wants to reset the Quickstep provider
+if [ -f "$SWITCHER_OUTPUT/reset" ]; then
+  # Assign $STEPDIR var
+  if [ -f "$SWITCHER_OUTPUT/isProduct" ]; then
+    STEPDIR=/product/overlay
+    # Try to mount /product
+    is_mounted /product || mount /product
+    is_mounted_rw /product || mount_rw /product
+  else
+    if $MAGISK; then
+      STEPDIR=$UNITY/system/vendor/overlay
+    else
+      STEPDIR=$UNITY/$VEN/overlay
+    fi
+  fi
+  rm -rf $STEPDIR/QuickstepSwitcherOverlay.apk
+  rm -rf $UNITY$SYS/etc/permissions/privapp-permissions-quickstepswitcher.xml
+  rm -rf $UNITY$SYS/etc/sysconfig/quickstepswitcher-hiddenapi-package-whitelist.xml
+  rm -rf $$UNITY$SYS/priv-app/QuickstepSwitcher*
+  rm -rf $SWITCHER_OUTPUT/output/*
+  rm -rf $SWITCHER_OUTPUT/lastChange
+  rm -rf $SWITCHER_OUTPUT/reset
+  unmount_rw /product
+fi
 
-# Check if user wants to switch Quickstep provider
+# Check if user wants to switch the Quickstep provider
 if [ -f "$SWITCHER_OUTPUT/lastChange" ]; then
   # Assign $STEPDIR var
   if [ -f "$SWITCHER_OUTPUT/isProduct" ]; then
