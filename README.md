@@ -41,6 +41,9 @@ QuickSwitch is a magisk module which systemlessly enables Pie recents (Quickstep
 - [The Hyperion team](https://play.google.com/store/apps/details?id=projekt.launcher), for helping test QuickSwitch.
 
 ## Changelog:
+### v1.1.0
+- fix recents provider not persisting after updating the module
+
 ### v1.0.9-hotfix
 - fix bootloop when resetting to default provider
 

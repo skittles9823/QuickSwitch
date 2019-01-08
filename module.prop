@@ -1,7 +1,7 @@
 id=quickstepswitcher
 name=QuickSwitch
-version=v1.0.9-hotfix
-versionCode=110
+version=v1.1.0
+versionCode=111
 author=The Lawnchair team
 description=Pie recents for any supported launcher
 minMagisk=17000
