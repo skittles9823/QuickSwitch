@@ -43,6 +43,7 @@ QuickSwitch is a magisk module which systemlessly enables Pie recents (Quickstep
 ## Changelog:
 ### v1.1.0
 - fix recents provider not persisting after updating the module
+- remove old apk
 
 ### v1.0.9-hotfix
 - fix bootloop when resetting to default provider
