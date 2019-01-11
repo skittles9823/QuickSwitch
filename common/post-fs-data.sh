@@ -1,5 +1,3 @@
-# This script will be executed in post-fs-data mode
-# More info in the main Magisk thread
 # Start logging
 set -x 2>/cache/$MODID.log
 
@@ -50,10 +48,11 @@ if [ -f "$SWITCHER_OUTPUT/reset" ]; then
   rm -rf $STEPDIR/QuickstepSwitcherOverlay.apk
   rm -rf $UNITY$SYS/etc/permissions/privapp-permissions-quickstepswitcher.xml
   rm -rf $UNITY$SYS/etc/sysconfig/quickstepswitcher-hiddenapi-package-whitelist.xml
-  rm -rf $$UNITY$SYS/priv-app/QuickstepSwitcher*
+  rm -rf $UNITY$SYS/priv-app/QuickstepSwitcher*
   rm -rf $SWITCHER_OUTPUT/output/*
   rm -rf $SWITCHER_OUTPUT/lastChange
   rm -rf $SWITCHER_OUTPUT/reset
+  rm -rf $SWITCHER_DIR/shared_prefs/tmp.xml
   rm /data/resource-cache/overlays.list
   unmount_rw /product
 fi

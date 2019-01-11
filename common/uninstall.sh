@@ -1,5 +1,4 @@
 rm /data/resource-cache/overlays.list
-touch /data/user_de/0/xyz.paphonb.quickstepswitcher/files/lastChange
 if ! $MAGISK; then
   if [ -d /product/overlay ]; then
     STEP=/product/overlay/QuickstepSwitcherOverlay.apk

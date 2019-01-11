@@ -47,3 +47,10 @@ if [ -f "$SWITCHER_OUTPUT/isProduct" ]; then
     fi
   fi
 fi
+if [ -f "$SWITCHER_OUTPUT/gridRecents" ]; then GRID=true; fi
+#grid_enable(){ if $MAGISK; then resetprop ro.recents.grid true; else setprop ro.recents.grid true; fi }
+#grid_disable(){ if $MAGISK; then resetprop ro.recents.grid false; else setprop ro.recents.grid false; fi }
+#[ "$GRID" ] && grid_enable || grid_disable
+[ -d /storage/emulated/0 ] && SDCARD=/storage/emulated/0 || SDCARD=/data/media/0
+mkdir -p $SDCARD/Documents/$MODID
+cp -rf /cache/$MODID* $SDCARD/Documents/$MODID/

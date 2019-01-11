@@ -25,7 +25,7 @@ QuickSwitch is a magisk module which systemlessly enables Pie recents (Quickstep
 6. Profit.
 
 ## Debugging
-- The boot scripts will save logs to /cache whenever it detects the user wants to switch providers
+- The boot scripts will save logs to /cache and /sdcard/Documents/quickstepswitcher whenever it detects the user wants to switch providers
 - All logs begin with **quickstepswitcher**
 - If you have any issues, please join the [Telegram group](https://t.me/QuickstepSwitcherSupport) and send the logs along with what your issue is.
 
@@ -40,7 +40,17 @@ QuickSwitch is a magisk module which systemlessly enables Pie recents (Quickstep
 - [The Lawnchair team](https://t.me/lawnchairci), for testing QuickSwitch.
 - [The Hyperion team](https://play.google.com/store/apps/details?id=projekt.launcher), for helping test QuickSwitch.
 
+## Support
+You can get support for the module in either the [Telegram group](https://t.me/QuickstepSwitcherSupport) or the [XDA Thread](hh).
+
 ## Changelog:
+### v.1.1.1
+- update to Unity 3.1
+- update QuickSwitch APK, now can enable/disable navigation bar gestures
+- copy logs to /sdcard/Documents/quickstepswitcher as well
+- various fixes for resetting to the default provider
+- temporarily disable installs on OnePlus3(T) devices as it causes RIL to die for unknown reasons
+
 ### v1.1.0
 - fix recents provider not persisting after updating the module
 - remove old apk

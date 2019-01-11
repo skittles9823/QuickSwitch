@@ -7,24 +7,32 @@
 ##########################################################################################
 
 # Temp Installer Path
-export TMPDIR=/dev/tmp; export INSTALLER=$TMPDIR/install; export OUTFD=$2; export ZIP=$3
+export TMPDIR=/dev/tmp; export INSTALLER=$TMPDIR/install; export OUTFD=$2; export ZIPFILE=$3
 
 # Default Permissions
 umask 022
+
+# Preliminary detection of bootmode for ui_print function
+ps | grep zygote | grep -qv grep >/dev/null && BOOTMODE=true || BOOTMODE=false
+$BOOTMODE || ps -A 2>/dev/null | grep zygote | grep -qv grep >/dev/null && BOOTMODE=true
+
+ui_print() {
+  $BOOTMODE && echo "$1" || echo -e "ui_print $1\nui_print" >> /proc/self/fd/$OUTFD
+}
 
 # Initial Cleanup
 rm -rf $TMPDIR 2>/dev/null
 mkdir -p $INSTALLER
 
 # Extract Unityfiles
-unzip -o "$ZIP" 'common/unityfiles.tar.gz' -d $INSTALLER >&2
-[ -f "$INSTALLER/common/unityfiles.tar.gz" ] || { echo "! Unable to extract zip file !"; exit 1; }
+unzip -o "$ZIPFILE" 'common/unityfiles/tools.tar.gz' 'common/unityfiles/util_functions.sh' -d $INSTALLER >&2
+[ -f "$INSTALLER/common/unityfiles/tools.tar.gz" ] || { ui_print "! Unable to extract zip file !"; exit 1; }
 
 # Load Util_Functions, Add In-House Binaries to PATH, Start Bash Shell
-ARCH32=`getprop ro.product.cpu.abi | cut -c-3`
-[ -z $ARCH32 ] && ARCH32=`getprop ro.product.cpu.abi2 | cut -c-3`
-[ -z $ARCH32 ] && ARCH32=arm
-(tar -xf $INSTALLER/common/unityfiles.tar.gz -C $INSTALLER/common) || { echo "! Unable to extract unity files !"; exit 1; }
-chmod -R 755 $INSTALLER/common/unityfiles/$ARCH32
-echo $PATH | grep -q "$INSTALLER/common/unityfiles/$ARCH32" || export PATH=$INSTALLER/common/unityfiles/$ARCH32:$PATH
+export ARCH32=`getprop ro.product.cpu.abi | cut -c-3`
+[ -z $ARCH32 ] && export ARCH32=`getprop ro.product.cpu.abi2 | cut -c-3`
+[ -z $ARCH32 ] && export ARCH32=arm
+(tar -xf $INSTALLER/common/unityfiles/tools.tar.gz -C $INSTALLER/common/unityfiles) || { ui_print "! Unable to extract unity tools !"; exit 1; }
+chmod -R 755 $INSTALLER/common/unityfiles/tools/$ARCH32
+echo $PATH | grep -q "$INSTALLER/common/unityfiles/tools/$ARCH32" || export PATH=$INSTALLER/common/unityfiles/tools/$ARCH32:$PATH
 bash $INSTALLER/common/unityfiles/util_functions.sh
