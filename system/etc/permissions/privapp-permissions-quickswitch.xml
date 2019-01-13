@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<permissions>
-    <privapp-permissions package="xyz.paphonb.quickstepswitcher">
-        <permission name="android.permission.WRITE_SECURE_SETTINGS"/>
-    </privapp-permissions>
-</permissions>

@@ -44,6 +44,10 @@ QuickSwitch is a magisk module which systemlessly enables Pie recents (Quickstep
 You can get support for the module in either the [Telegram group](https://t.me/QuickstepSwitcherSupport) or the [XDA Thread](hh).
 
 ## Changelog:
+### v1.1.2
+- move app back to /system/app as it was broken for some people in priv-app
+- remove quickswitches privapp-permissions.xml file (toggling swipe up gestures in the app is likely broken now)
+
 ### v.1.1.1
 - update to Unity 3.1
 - update QuickSwitch APK, now can enable/disable navigation bar gestures
