@@ -2,18 +2,26 @@
 QuickSwitch is a magisk module which systemlessly enables Pie recents (Quickstep) in any supported launcher
 
 ## Donations:
-- If you wish to donate to [Paphonb](https://github.com/paphonb) for creating the QuickstepSwitcher app you can do so [here](https://paypal.me/Paphonb).
-- Or if you wish to donate to [Skittles9823](https://github.com/skittles9823) for making the module you can do so [here](https://paypal.me/Skittles2398).
+- If you wish to donate to [Paphonb](https://github.com/paphonb) for creating the QuickSwitch app you can do so [here](https://paypal.me/Paphonb).
+- Or if you wish to donate to [Skittles9823](https://github.com/skittles9823) for making the module and handling support you can do so [here](https://paypal.me/Skittles2398).
 
 ## Launcher Compatibility:
-- All launchers that have merged the Android P Launcher3 commits.
+- LawnchairV2 (APKMirror) (Playstore beta soon™)
+- Pixel Launcher (APKMirror)
+- Launcher3Quickstep (Quickstep)
+- OnePlus Launcher (Paphonbs rooted port)
+- ASUS ZenUI Launcher (Paphonbs port)
+- Samsung Experience Launcher (Paphonbs port - WIP - not public)
+- Hyperion (WIP - not public)
+- Many more Launcher3 forks that have merged the pie changes
 
 ## Disclaimer
 - A full list of compatible launchers will not be provided as the app autodetects which launchers are compatible.
 - Hyperion is currently unavailable as a recents provider as it's implementation is not stable enough. Please be patient and wait for an update regarding this.
+- Nova will likely never support QuickSwitch unless they decide to add support for the Razer Phone natively.
 
 ## Requirements:
-- Magisk 17+ (Or TWRP and an unlocked bootloader with init.d support for a rootless install)
+- Magisk 18+
 - Android 9.0 Pie
 
 ## Installation
@@ -22,16 +30,17 @@ QuickSwitch is a magisk module which systemlessly enables Pie recents (Quickstep
 3. Open the QuickSwitch app that was installed.
 4. Select a different launcher as your recents provider.
 5. Reboot.
-6. Profit.
+6. Verify your new recents provider is correct.
+7. Set the new recents provider as the default launcher.
+8. Profit.
 
 ## Debugging
-- The boot scripts will save logs to /cache and /sdcard/Documents/quickstepswitcher whenever it detects the user wants to switch providers
+- The boot scripts will save logs to /sdcard/Documents/quickstepswitcher whenever it detects the user wants to switch providers
 - All logs begin with **quickstepswitcher**
 - If you have any issues, please join the [Telegram group](https://t.me/QuickstepSwitcherSupport) and send the logs along with what your issue is.
 
 ## Sources and used/needed tools:
 - [Module Source](https://github.com/Skittles9823/QuickstepSwitcher)
-- [Unity](https://github.com/Zackptg5/Unity) by [Zackptg5](https://github.com/Zackptg5)
 - [Magisk](https://github.com/topjohnwu/Magisk) by [topjohnwu](https://forum.xda-developers.com/member.php?u=4470081)
 - [Magisk Module Template](https://github.com/topjohnwu/magisk-module-template) by [topjohnwu](https://forum.xda-developers.com/member.php?u=4470081)
 
@@ -41,9 +50,19 @@ QuickSwitch is a magisk module which systemlessly enables Pie recents (Quickstep
 - [The Hyperion team](https://play.google.com/store/apps/details?id=projekt.launcher), for helping test QuickSwitch.
 
 ## Support
-You can get support for the module in either the [Telegram group](https://t.me/QuickstepSwitcherSupport) or the [XDA Thread](hh).
+You can get support for the module in either the [Telegram group](https://t.me/QuickstepSwitcherSupport) or the [XDA Thread](https://forum.xda-developers.com/apps/magisk/module-quickswitch-universal-quickstep-t3884797/).
 
 ## Changelog:
+### v2.0.0
+- switch to the new Magisk template. RIP rootless users
+- overhauled basically everything
+- remove device check and replace with a warning that RIL issues are rom side
+- fix the creation of quickstepswitcher-old.log and clean up quickstepswitcher.log
+- logs are now slightly more descriptive for me.
+- more attempts to fix /product/overlay installs
+- fix QuickSwitch creating multiple launcher dirs when ever the launcher gets an update
+- add capability to set default home app
+
 ### v1.1.2
 - move app back to /system/app as it was broken for some people in priv-app
 - remove quickswitches privapp-permissions.xml file (toggling swipe up gestures in the app is likely broken now)
