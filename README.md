@@ -7,18 +7,17 @@ QuickSwitch is a magisk module which systemlessly enables Pie recents (Quickstep
 
 ## Launcher Compatibility:
 - LawnchairV2 (APKMirror) (Playstore beta soon™)
+- Hyperion
 - Pixel Launcher (APKMirror)
 - Launcher3Quickstep (Quickstep)
 - OnePlus Launcher (Paphonbs rooted port)
 - ASUS ZenUI Launcher (Paphonbs port)
 - Samsung Experience Launcher (Paphonbs port - WIP - not public)
-- Hyperion (WIP - not public)
 - Many more Launcher3 forks that have merged the pie changes
 
 ## Disclaimer
 - A full list of compatible launchers will not be provided as the app autodetects which launchers are compatible.
-- Hyperion is currently unavailable as a recents provider as it's implementation is not stable enough. Please be patient and wait for an update regarding this.
-- Nova will likely never support QuickSwitch unless they decide to add support for the Razer Phone natively.
+- Nova will likely never support QuickSwitch unless they decide to add support for the Razer Phone naitivly.
 
 ## Requirements:
 - Magisk 18+
@@ -53,6 +52,9 @@ QuickSwitch is a magisk module which systemlessly enables Pie recents (Quickstep
 You can get support for the module in either the [Telegram group](https://t.me/QuickstepSwitcherSupport) or the [XDA Thread](https://forum.xda-developers.com/apps/magisk/module-quickswitch-universal-quickstep-t3884797/).
 
 ## Changelog:
+### v2.0.1
+- hyperion is now public for all!
+
 ### v2.0.0
 - switch to the new Magisk template. RIP rootless users
 - overhauled basically everything
