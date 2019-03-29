@@ -28,10 +28,10 @@ SKIPMOUNT=false
 PROPFILE=false
 
 # Set to true if you need post-fs-data script
-POSTFSDATA=true
+POSTFSDATA=false
 
 # Set to true if you need late_start service script
-LATESTARTSERVICE=true
+LATESTARTSERVICE=false
 
 ##########################################################################################
 # Replace list
@@ -82,7 +82,7 @@ REPLACE="
 # BOOTMODE (bool): true if the module is currently installing in Magisk Manager
 # MODPATH (path): the path where your module files should be installed
 # TMPDIR (path): a place where you can temporarily store files
-# ZIP (path): your module's installation zip
+# ZIPFILE (path): your module's installation zip
 # ARCH (string): the architecture of the device. Value is either arm, arm64, x86, or x64
 # IS64BIT (bool): true if $ARCH is either arm64 or x64
 # API (int): the API level (Android version) of the device
@@ -142,7 +142,7 @@ on_install() {
   # The following is the default implementation: extract $ZIP/system to $MODPATH
   # Extend/change the logic to whatever you want
   ui_print "- Extracting module files"
-  unzip -o "$ZIP" 'quickswitch.sh' 'system/*' -d $MODPATH >&2
+  unzip -o "$ZIPFILE" 'quickswitch.sh' 'system/*' -d $MODPATH >&2
   cp -rf $MODPATH/quickswitch.sh /data/adb/service.d/
   chmod 755 /data/adb/service.d/quickswitch.sh
   # Custom install stuffs
@@ -154,7 +154,7 @@ on_install() {
     ui_print "Major upgrade. Removing old QuickSwitch files."
   fi
   rm -rf /data/resource-cache/*
-  #[ -d $SWITCHDIR ] && touch $SWITCHDIR/files/lastChange
+  [ -d $SWITCHDIR ] && touch $SWITCHDIR/files/lastChange
   ui_print "!!!!!!!!!!!!!!!!!!!!!!!!!Important!!!!!!!!!!!!!!!!!!!!!!!!"
   ui_print "!     RIL (Bluetooth, WiFi, etc) issues are ROM side     !"
   ui_print "!   If you lose functionality after setting a provider   !"
