@@ -52,10 +52,14 @@ QuickSwitch is a magisk module which systemlessly enables Pie recents (Quickstep
 You can get support for the module in either the [Telegram group](https://t.me/QuickstepSwitcherSupport) or the [XDA Thread](https://forum.xda-developers.com/apps/magisk/module-quickswitch-universal-quickstep-t3884797/).
 
 ## Changelog:
-### V2 0.2
+### v2.0.3
+- fix major derp
+
+### v2 0.2
 - slight template update
 - small change to make updating from 2.0.0+ not reset the recents provider
 - back on the magisk repo
+
 ### v2.0.1
 - hyperion is now public for all!
 
