@@ -131,7 +131,7 @@ if [ -f "$SWITCHER_OUTPUT/lastChange" ]; then
   grep "^ro.product.cpu.abilist[^#]" /system/build.prop | sed 's/ro.product.cpu.abilist/Arch/g' >> $LOGDIR/$MODID-formatted.log
   grep "^ro.build.version.sdk[^#]" /system/build.prop | sed 's/ro.build.version.sdk/APIVer/g' >> $LOGDIR/$MODID-formatted.log
   grep "^ro.build.flavor[^#]" /system/build.prop | sed 's/ro.build.flavor/BuildFlavor/g' >> $LOGDIR/$MODID-formatted.log
-  echo "---ROM Info---" >> $LOGDIR/$MODID-formatted.log
+  echo "\n---ROM Info---" >> $LOGDIR/$MODID-formatted.log
   grep "^ro.build.host[^#]" /system/build.prop | sed 's/ro.build.host/Host/g' >> $LOGDIR/$MODID-formatted.log
   grep "^ro.*.device[^#]" /system/build.prop >> $LOGDIR/$MODID-formatted.log
   echo -e "\n---Variables---" >> $LOGDIR/$MODID-formatted.log
