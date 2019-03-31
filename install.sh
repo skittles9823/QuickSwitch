@@ -147,7 +147,8 @@ on_install() {
   chmod 755 /data/adb/service.d/quickswitch.sh
   # Custom install stuffs
   SWITCHDIR=/data/user_de/0/xyz.paphonb.quickstepswitcher
-  if [ `grep "versionCode=" /sbin/.magisk/img/quickstepswitcher/module.prop | sed 's/versionCode=//'` -le 114 ];then
+  if imageless_magisk; then PROPDIR="$NVBASE/modules/$MODID"; else PROPDIR="/sbin/.magisk/img/$MODID"; fi
+  if [ `grep "versionCode=" $PROPDIR/module.prop | sed 's/versionCode=//'` -le 114 ];then
     rm -rf $SWITCHDIR/shared_prefs/*
     rm -rf $SWITCHDIR/files/*
     rm -rf /product/overlay/QuickstepSwitcherOverlay.apk
@@ -160,12 +161,14 @@ on_install() {
   ui_print "!   If you lose functionality after setting a provider   !"
   ui_print "!     Please check the XDA thread for a possible fix     !"
   ui_print "!!!!!!!!!!!!!!!!!!!!!!!!!Important!!!!!!!!!!!!!!!!!!!!!!!!"
+  ui_print " "
   if [ $API == "29" ]; then
     ui_print "!!!!!!!!!!!!!!!!!!!!!!!!!Important!!!!!!!!!!!!!!!!!!!!!!!!"
     ui_print "!     Android Q has not been tested with this module     !"
     ui_print "!   Any custom launcher such as Lawnchair or hyperion    !"
     ui_print "!       needs to be updated to support Q recents.        !"
     ui_print "!!!!!!!!!!!!!!!!!!!!!!!!!Important!!!!!!!!!!!!!!!!!!!!!!!!"
+    ui_print " "
   fi
   ui_print "!!!!!!!!!!!!!!!!!!!!!!!!!Important!!!!!!!!!!!!!!!!!!!!!!!!"
   ui_print "!  I am sick of people reporting issues without reading  !"

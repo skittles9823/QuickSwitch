@@ -52,8 +52,10 @@ if [ -f "$SWITCHER_OUTPUT/reset" ]; then
     [ -d "/product/overlay" ] && STEPDIR=/product/overlay
     [ -d "/system/product/overlay" ] && STEPDIR=$MODDIR/system/product/overlay
     # Try to mount /product
-    is_mounted " /product" || mount /product
-    is_mounted_rw " /product" || mount_rw /product
+    if [ $STEPDIR = "/product/overlay" ]; then
+      is_mounted " /product" || mount /product
+      is_mounted_rw " /product" || mount_rw /product
+    fi
   else
     PRODUCT=false
     STEPDIR=$MODDIR/system/vendor/overlay
@@ -68,7 +70,7 @@ if [ -f "$SWITCHER_OUTPUT/reset" ]; then
   rm -rf $SWITCHER_OUTPUT/reset
   rm -rf $SWITCHER_DIR/shared_prefs/tmp.xml
   rm /data/resource-cache/overlays.list
-  unmount_rw /product
+  [ $STEPDIR = "/product/overlay" ] && unmount_rw /product
 fi
 
 # Check if user wants to switch the Quickstep provider
@@ -81,8 +83,10 @@ if [ -f "$SWITCHER_OUTPUT/lastChange" ]; then
     [ -d "/product/overlay" ] && STEPDIR=/product/overlay
     [ -d "/system/product/overlay" ] && STEPDIR=$MODDIR/system/product/overlay
     # Try to mount /product
-    is_mounted " /product" || mount /product
-    is_mounted_rw " /product" || mount_rw /product
+    if [ $STEPDIR = "/product/overlay" ]; then
+      is_mounted " /product" || mount /product
+      is_mounted_rw " /product" || mount_rw /product
+    fi
   else
     PRODUCT=false
     STEPDIR=$MODDIR/system/vendor/overlay
@@ -111,9 +115,9 @@ if [ -f "$SWITCHER_OUTPUT/lastChange" ]; then
 
   chmod 644 $OVERLAY; chmod 644 $PERMISSIONXML; chmod 644 $WHITELISTXML
   chmod 755 $SYSTEMIZE_TARGET/*; chmod 644 $SYSTEMIZE_TARGET/*/*
-  if [ $STEPDIR == "$MODDIR/system/vendor/overlay" ]; then chown 0:2000 $STEPDIR; fi
+  [ $STEPDIR == "$MODDIR/system/vendor/overlay" ] && chown 0:2000 $STEPDIR
 
-  unmount_rw /product
+  [ $STEPDIR = "/product/overlay" ] && unmount_rw /product
 
   # Delete possible bootloop causing file and QuickstepSwitcher created files
   rm /data/resource-cache/overlays.list

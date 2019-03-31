@@ -7,21 +7,17 @@
 MODDIR=${0%/*}
 
 # This script will be executed in late_start service mode
-# Where to log to
-[ -d /storage/emulated/0 ] && SDCARD=/storage/emulated/0 || SDCARD=/data/media/0
-LOGDIR=$MODDIR/logs
-
 # Start logging
 MODID=quickstepswitcher
-set -x 2>$LOGDIR/$MODID-service.log
-[ -d "/product/overlay" ] && PRODUCT=/product/overlay
-[ -d "/system/product/overlay" ] && PRODUCT=$MODDIR/system/product/overlay
+set -x 2>$MODDIR/logs/$MODID-service.log
 
 # Assign vars
 SWITCHER_DIR=/data/user_de/0/xyz.paphonb.quickstepswitcher
 SWITCHER_OUTPUT=$SWITCHER_DIR/files
 DID_MOUNT_RW=
 if [ -f "$SWITCHER_OUTPUT/isProduct" ]; then
+  [ -d "/product/overlay" ] && PRODUCT=/product/overlay
+  [ -d "/system/product/overlay" ] && PRODUCT=$MODDIR/system/product/overlay
   if [ -f "$SWITCHER_OUTPUT/output/QuickstepSwitcherOverlay.apk" ]; then
     is_mounted() {
       cat /proc/mounts | grep " `readlink -f $1` " 2>/dev/null
@@ -56,10 +52,9 @@ fi
 
 # Eventually this'll get implemented so it's usable
 #if [ -f "$SWITCHER_OUTPUT/gridRecents" ]; then GRID=true; fi
-#grid_enable(){ if $MAGISK; then resetprop ro.recents.grid true; else setprop ro.recents.grid true; fi }
-#grid_disable(){ if $MAGISK; then resetprop ro.recents.grid false; else setprop ro.recents.grid false; fi }
-#[ "$GRID" ] && grid_enable || grid_disable
+#[ "$GRID" ] && resetprop ro.recents.grid true || resetprop ro.recents.grid false
 
-# Send the logs to /sdcard/Documents/$MODID/
+# Send the logs to $SDCARD/Documents/$MODID/
+[ -d /storage/emulated/0 ] && SDCARD=/storage/emulated/0 || SDCARD=/data/media/0
 mkdir -p $SDCARD/Documents/$MODID
-cp -rf $LOGDIR/$MODID* $SDCARD/Documents/$MODID/
+cp -rf $MODDIR/logs/$MODID* $SDCARD/Documents/$MODID/
