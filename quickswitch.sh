@@ -9,9 +9,11 @@ if imageless_magisk; then
 else
   MODDIR=/sbin/.magisk/img/quickstepswitcher
 fi
-[ -f "/product/overlay/QuickstepSwitcherOverlay.apk" ] && PRODUCT=/product/overlay/QuickstepSwitcherOverlay.apk
+if [ -d "/product/overlay" -a ! -L "/product" ]; then
+  PRODUCT=/product/overlay
+fi
 if [ ! -d "$MODDIR" ]; then
-  if [ -d "$PRODUCT" ]; then rm $PRODUCT; fi
+  if [ ! -z "$PRODUCT" ]; then rm $PRODUCT/QuickstepSwitcherOverlay.apk; fi
   rm -rf /data/resource-cache/*
   rm $0
   exit 0
