@@ -1,3 +1,5 @@
-[ -d "/product/overlay" ] && PRODUCT=/product/overlay
-if [ -d "$PRODUCT" ]; then rm -rf $PRODUCT/QuickstepSwitcherOverlay.apk; fi
+if [ -d "/product/overlay" -a ! -L "/product" ]; then
+  PRODUCT=/product/overlay
+fi
+if [ "$PRODUCT" ]; then rm -rf $PRODUCT/QuickstepSwitcherOverlay.apk; fi
 rm -rf /data/resource-cache/*
