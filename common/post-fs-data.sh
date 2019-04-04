@@ -48,9 +48,12 @@ if [ -f "$SWITCHER_OUTPUT/reset" ]; then
   # Assign $STEPDIR var
   if [ -f "$SWITCHER_OUTPUT/isProduct" ]; then
     PRODUCT=true
-    # Detect if rom is rarted and has /system/product/overlay (definitely a symlink)
-    [ -d "/product/overlay" ] && STEPDIR=/product/overlay
-    [ -d "/system/product/overlay" ] && STEPDIR=$MODDIR/system/product/overlay
+    # Detect if rom is rarted and has /system/product/overlay (y u no just use /product)
+    if [ -L "/product" ]; then
+      STEPDIR=$MODDIR/system/product/overlay
+    else
+      STEPDIR=/product/overlay
+    fi
     # Try to mount /product
     if [ $STEPDIR = "/product/overlay" ]; then
       is_mounted " /product" || mount /product
@@ -79,9 +82,12 @@ if [ -f "$SWITCHER_OUTPUT/lastChange" ]; then
   # Assign $STEPDIR var
   if [ -f "$SWITCHER_OUTPUT/isProduct" ]; then
     PRODUCT=true
-    # Detect if rom is rarted and has /system/product/overlay (definitely a symlink)
-    [ -d "/product/overlay" ] && STEPDIR=/product/overlay
-    [ -d "/system/product/overlay" ] && STEPDIR=$MODDIR/system/product/overlay
+    # Detect if rom is rarted and has /system/product/overlay (y u no just use /product)
+    if [ -L "/product" ]; then
+      STEPDIR=$MODDIR/system/product/overlay
+    else
+      STEPDIR=/product/overlay
+    fi
     # Try to mount /product
     if [ $STEPDIR = "/product/overlay" ]; then
       is_mounted " /product" || mount /product
