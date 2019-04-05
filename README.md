@@ -1,5 +1,5 @@
 # QuickSwitch - Quickstep enabler for any supported launcher
-QuickSwitch is a magisk module which systemlessly enables Pie recents (Quickstep) in any supported launcher
+QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep) in any supported launcher
 
 ## Donations:
 - If you wish to donate to [Paphonb](https://github.com/paphonb) for creating the QuickSwitch app you can do so [here](https://paypal.me/Paphonb).
@@ -39,12 +39,12 @@ QuickSwitch is a magisk module which systemlessly enables Pie recents (Quickstep
 - If you have any issues, please join the [Telegram group](https://t.me/QuickstepSwitcherSupport) and send the logs along with what your issue is.
 
 ## Sources and used/needed tools:
-- [Module Source](https://github.com/Skittles9823/QuickstepSwitcher)
+- [Module Source](https://github.com/skittles9823/QuickSwitch)
 - [Magisk](https://github.com/topjohnwu/Magisk) by [topjohnwu](https://forum.xda-developers.com/member.php?u=4470081)
 - [Magisk Module Template](https://github.com/topjohnwu/magisk-module-template) by [topjohnwu](https://forum.xda-developers.com/member.php?u=4470081)
 
 ## Thanks to
-- [Paphonb](https://github.com/paphonb), for being the main brains behind the modules, creating the app, and much more.
+- [Paphonb](https://github.com/paphonb), for being the main brains behind the module, creating the app, and much more.
 - [The Lawnchair team](https://t.me/lawnchairci), for testing QuickSwitch.
 - [The Hyperion team](https://play.google.com/store/apps/details?id=projekt.launcher), for helping test QuickSwitch.
 
@@ -53,6 +53,8 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 
 ## Changelog:
 ### v2.0.4
+- fix rom info logging formatting
+- check for /product being a symlink and copy the overlay systemlessly if it is
 - various improvements
 
 ### v2.0.3
