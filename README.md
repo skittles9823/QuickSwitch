@@ -55,6 +55,7 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 ### v2.0.4
 - fix rom info logging formatting
 - check for /product being a symlink and copy the overlay systemlessly if it is
+- add more checks in the late-start script so it isn't needlessly run every boot for devices with /product/overlay
 - various improvements
 
 ### v2.0.3
