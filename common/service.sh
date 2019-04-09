@@ -64,4 +64,5 @@ fi
 # Send the logs to $SDCARD/Documents/$MODID/
 [ -d /storage/emulated/0 ] && SDCARD=/storage/emulated/0 || SDCARD=/data/media/0
 mkdir -p $SDCARD/Documents/$MODID
-cp -rf $MODDIR/logs/$MODID* $SDCARD/Documents/$MODID/
+rm -rf $SDCARD/Documents/$MODID/*
+cp -rf $MODDIR/logs/* $SDCARD/Documents/$MODID/

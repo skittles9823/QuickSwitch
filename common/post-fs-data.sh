@@ -111,12 +111,12 @@ if [ -f "$SWITCHER_OUTPUT/lastChange" ]; then
   mkdir -p $MODDIR/system/etc/sysconfig
 
   # Delete old provider dir
-  rm -rf $SYSTEMIZE_TARGET/QuickstepSwitcher*
+  rm -rf $MODDIR/system/priv-app/QuickstepSwitcher*
   # Copy needed files to module dir
   cp -rf $SWITCHER_OUTPUT/output/privapp-permissions-quickstepswitcher.xml $PERMISSIONXML
   cp -rf $SWITCHER_OUTPUT/output/quickstepswitcher-hiddenapi-package-whitelist.xml $WHITELISTXML
   cp -rf $SWITCHER_OUTPUT/output/QuickstepSwitcherOverlay.apk $OVERLAY
-  cp -rf $SWITCHER_OUTPUT/output/systemize/* $SYSTEMIZE_TARGET
+  cp -rf $SWITCHER_OUTPUT/output/systemize/* $SYSTEMIZE_TARGET/
   rm -rf $SWITCHER_DIR/shared_prefs/tmp.xml
 
   chmod 644 $OVERLAY; chmod 644 $PERMISSIONXML; chmod 644 $WHITELISTXML
