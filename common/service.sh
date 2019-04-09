@@ -58,7 +58,7 @@ if [ -f "$SWITCHER_OUTPUT/lastChange" ]; then
 fi
 
 # Eventually this'll get implemented so it's usable
-#if [ -f "$SWITCHER_OUTPUT/gridRecents" ]; then GRID=true; fi
+#GRID= && [ -f "$SWITCHER_OUTPUT/gridRecents" ] && GRID=true
 #[ "$GRID" ] && resetprop ro.recents.grid true || resetprop ro.recents.grid false
 
 # Send the logs to $SDCARD/Documents/$MODID/
