@@ -57,6 +57,8 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 - check for /product being a symlink and copy the overlay systemlessly if it is
 - add more checks in the late-start script so it isn't needlessly run every boot for devices with /product/overlay
 - various improvements
+- add grid recents toggle
+- remove hyperion blacklist app side (will now show hyperion for everyone)
 
 ### v2.0.3
 - fix major derp
