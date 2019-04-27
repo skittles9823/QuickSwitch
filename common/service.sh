@@ -57,9 +57,9 @@ if [ -f "$SWITCHER_OUTPUT/lastChange" ]; then
   fi
 fi
 
-# Eventually this'll get implemented so it's usable
-#GRID= && [ -f "$SWITCHER_OUTPUT/gridRecents" ] && GRID=true
-#[ "$GRID" ] && resetprop ro.recents.grid true || resetprop ro.recents.grid false
+# weed it werks
+GRID= && [ -f "$SWITCHER_OUTPUT/gridRecents" ] && GRID=true
+[ "$GRID" ] && resetprop ro.recents.grid true || resetprop ro.recents.grid false
 
 # Send the logs to $SDCARD/Documents/$MODID/
 [ -d /storage/emulated/0 ] && SDCARD=/storage/emulated/0 || SDCARD=/data/media/0
