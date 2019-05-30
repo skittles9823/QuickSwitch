@@ -19,11 +19,11 @@ if [ -f "$SWITCHER_OUTPUT/lastChange" ]; then
   if [ -f "$SWITCHER_OUTPUT/isProduct" ]; then
     if [ -f "$SWITCHER_OUTPUT/output/QuickstepSwitcherOverlay.apk" ]; then
       is_mounted() {
-        cat /proc/mounts | grep " `readlink -f $1` " 2>/dev/null
+        grep " `readlink -f $1` " /proc/mounts 2>/dev/null
         return $?
       }
       is_mounted_rw() {
-        cat /proc/mounts | grep " `readlink -f $1` " | grep " rw," 2>/dev/null
+        grep " `readlink -f $1` " /proc/mounts | grep " rw," 2>/dev/null
         return $?
       }
       mount_rw() {

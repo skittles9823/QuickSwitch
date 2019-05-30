@@ -23,12 +23,12 @@ rm $SWITCHER_OUTPUT/lastBoot
 
 # Function to check if product is mounted
 is_mounted() {
-  cat /proc/mounts | grep " `readlink -f $1` " 2>/dev/null
+  grep " `readlink -f $1` " /proc/mounts 2>/dev/null
   return $?
 }
 
 is_mounted_rw() {
-  cat /proc/mounts | grep " `readlink -f $1` " | grep " rw," 2>/dev/null
+  grep " `readlink -f $1` " /proc/mounts | grep " rw," 2>/dev/null
   return $?
 }
 
