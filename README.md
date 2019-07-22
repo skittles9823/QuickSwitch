@@ -55,6 +55,10 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 ### v2.0.6
 - update is_mounted(\_rw) functions to match Magisks
 - update apk and switch to a new reboot method
+- updated /product logic for Magisk 19305+
+- moved all bootscripts to /data/adb/service.d and /data/adb/post-fs-data.d so they will always get executed first
+- more attempts at trying to fix magisk not successfully copying the overlay
+- oopsie, forgot to add an API check again after switching templates
 
 ### v2.0.5
 - fix grid recents

@@ -28,10 +28,10 @@ SKIPMOUNT=false
 PROPFILE=false
 
 # Set to true if you need post-fs-data script
-POSTFSDATA=true
+POSTFSDATA=false
 
 # Set to true if you need late_start service script
-LATESTARTSERVICE=true
+LATESTARTSERVICE=false
 
 ##########################################################################################
 # Replace list
@@ -141,10 +141,18 @@ print_modname() {
 on_install() {
   # The following is the default implementation: extract $ZIP/system to $MODPATH
   # Extend/change the logic to whatever you want
+  if [ $API -lt "28" ]; then
+    ui_print "QuickSwitch is for Android Pie+ only"
+  fi
   ui_print "- Extracting module files"
-  unzip -o "$ZIPFILE" 'quickswitch.sh' 'system/*' -d $MODPATH >&2
-  cp -rf $MODPATH/quickswitch.sh /data/adb/service.d/
-  chmod 755 /data/adb/service.d/quickswitch.sh
+  unzip -o "$ZIPFILE" 'quickswitch-service.sh' 'quickswitch-post.sh' 'system/*' -d $MODPATH >&2
+  cp -rf $MODPATH/quickswitch-service.sh /data/adb/service.d/
+  cp -rf $MODPATH/quickswitch-post.sh /data/adb/post-fs-data.d/
+  chmod 755 /data/adb/service.d/quickswitch-service.sh
+  chmod 755 /data/adb/post-fs-data.d/quickswitch-post.sh
+  rm -rf /data/adb/service.d/quickswitch.sh
+  rm -rf $MODPATH/quickswitch-service.sh
+  rm -rf $MODPATH/quickswitch-post.sh
   # Custom install stuffs
   SWITCHDIR=/data/user_de/0/xyz.paphonb.quickstepswitcher
   if imageless_magisk; then PROPDIR="$NVBASE/modules/$MODID"; else PROPDIR="/sbin/.magisk/img/$MODID"; fi
