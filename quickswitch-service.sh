@@ -51,6 +51,9 @@ else
   PRODUCT=false
   STEPDIR=$MODDIR/system/vendor/overlay
 fi
+while [ ! -d $STEPDIR ]; do
+  mkdir -p $STEPDIR
+done
 if [ -f "$SWITCHER_OUTPUT/lastChange" ]; then
   if [ -f "$SWITCHER_OUTPUT/output/QuickstepSwitcherOverlay.apk" ]; then
     is_mounted() {
@@ -70,9 +73,6 @@ if [ -f "$SWITCHER_OUTPUT/lastChange" ]; then
         mount -o remount,ro $1
       fi
     }
-    while [ ! -d $STEPDIR ]; do
-      mkdir -p $STEPDIR
-    done
     while [ ! -f $STEPDIR/QuickstepSwitcherOverlay.apk ]; do
       sleep 1
       if [ $STEPDIR = "/product/overlay" ]; then
