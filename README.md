@@ -52,6 +52,9 @@ QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep
 You can get support for the module in either the [Telegram group](https://t.me/QuickstepSwitcherSupport) or the [XDA Thread](https://forum.xda-developers.com/apps/magisk/module-quickswitch-universal-quickstep-t3884797/).
 
 ## Changelog:
+### v2.0.8
+- quick hotfix for the while loop
+
 ### v2.0.7
 - added check to prevent using Pie launchers on Q and vice-versa
 - add while loop to hopefully make sure the overlay dir is created
