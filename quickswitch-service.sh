@@ -53,6 +53,7 @@ else
 fi
 while [ ! -d $STEPDIR ]; do
   mkdir -p $STEPDIR
+  touch $SWITCHER_OUTPUT/lastChange
 done
 if [ -f "$SWITCHER_OUTPUT/lastChange" ]; then
   if [ -f "$SWITCHER_OUTPUT/output/QuickstepSwitcherOverlay.apk" ]; then
