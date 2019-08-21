@@ -1,6 +1,75 @@
-if [ -d "/product/overlay" -a ! -L "/product" ]; then
-  PRODUCT=/product/overlay
+MAGISK_VER_CODE=`grep MAGISK_VER_CODE /data/adb/magisk/util_functions.sh`
+imageless_magisk() {
+  [ $MAGISK_VER_CODE -gt 18100 ]
+  return $?
+}
+
+if imageless_magisk; then
+  MODDIR=/data/adb/modules/quickstepswitcher
+else
+  MODDIR=/sbin/.magisk/img/quickstepswitcher
 fi
-if [ "$PRODUCT" ]; then rm -rf $PRODUCT/QuickstepSwitcherOverlay.apk; fi
+
+DID_MOUNT_RW=
+is_mounted() {
+  grep " `readlink -f $1` " /proc/mounts 2>/dev/null
+  return $?
+}
+
+is_mounted_rw() {
+  grep " `readlink -f $1` " /proc/mounts | grep " rw," 2>/dev/null
+  return $?
+}
+
+mount_rw() {
+  mount -o remount,rw $1
+  DID_MOUNT_RW=$1
+}
+
+unmount_rw() {
+  if [ "x$DID_MOUNT_RW" = "x$1" ]; then
+    mount -o remount,ro $1
+  fi
+}
+
+SWITCHER_DIR=/data/user_de/0/xyz.paphonb.quickstepswitcher
+SWITCHER_OUTPUT=$SWITCHER_DIR/files
+
+if [ -f "$SWITCHER_OUTPUT/isProduct" ]; then
+  #if [ $MAGISK_VER_CODE -lt "19305" ]; then
+  STEPDIR=/product/overlay
+  #fi
+  # Try to mount /product
+  if [ "$STEPDIR" == "/product/overlay" ]; then
+    is_mounted " /product" || mount /product
+    is_mounted_rw " /product" || mount_rw /product
+  fi
+elif [ -d /oem/OP ];then
+  OEM=true
+  is_mounted " /oem" || mount /oem
+  is_mounted_rw " /oem" || mount_rw /oem
+  is_mounted " /oem/OP" || mount /oem/OP
+  is_mounted_rw " /oem/OP" || mount_rw /oem/OP
+  STEPDIR=/oem/OP/OPEN_US/overlay/framework
+fi
+if [ "$STEPDIR" == "/product/overlay" ]; then
+  is_mounted " /product" || mount /product
+  is_mounted_rw " /product" || mount_rw /product
+elif [ "$STEPDIR" == "/oem/OP/OPEN_US/overlay/framework" ];then
+  is_mounted " /oem" || mount /oem
+  is_mounted_rw " /oem" || mount_rw /oem
+  is_mounted " /oem/OP" || mount /oem/OP
+  is_mounted_rw " /oem/OP" || mount_rw /oem/OP
+fi
+
+rm -rf $STEPDIR/QuickstepSwitcherOverlay.apk
+
+if [ "$STEPDIR" == "/product/overlay" ]; then
+  unmount_rw /product
+elif [ "$STEPDIR" == "/oem/OP/OPEN_US/overlay/framework" ]; then
+  unmount_rw /oem/OP
+  unmount_rw /oem
+fi
+
 rm -rf /data/resource-cache/*
 rm -f /data/adb/post-fs-data.d/quickswitch-post.sh

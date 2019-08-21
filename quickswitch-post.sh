@@ -1,15 +1,12 @@
 #!/system/bin/sh
-# Do NOT assume where your module will be located.
-# ALWAYS use $MODDIR if you need to know where this script
-# and module is placed.
-# This will make sure your module will still work
-# if Magisk change its mount point in the future
 
 MAGISK_VER_CODE=`grep MAGISK_VER_CODE /data/adb/magisk/util_functions.sh`
+
 imageless_magisk() {
   [ $MAGISK_VER_CODE -gt 18100 ]
   return $?
 }
+
 if imageless_magisk; then
   MODDIR=/data/adb/modules/quickstepswitcher
 else
@@ -52,27 +49,37 @@ unmount_rw() {
     mount -o remount,ro $1
   fi
 }
+
+# Assign $STEPDIR var
+if [ -f "$SWITCHER_OUTPUT/isProduct" ]; then
+  PRODUCT=true
+  # Yay, magisk supports bind mounting /product now
+  # Magisk can't mount /product for now. Will keep this for when it's fixed
+  #if [ $MAGISK_VER_CODE -ge "19305" ]; then
+  #  STEPDIR=$MODDIR/system/product/overlay
+  #else
+  STEPDIR=/product/overlay
+  #fi
+  # Try to mount /product
+  if [ "$STEPDIR" == "/product/overlay" ]; then
+    is_mounted " /product" || mount /product
+    is_mounted_rw " /product" || mount_rw /product
+  fi
+elif [ -d /oem/OP ];then
+  OEM=true
+  is_mounted " /oem" || mount /oem
+  is_mounted_rw " /oem" || mount_rw /oem
+  is_mounted " /oem/OP" || mount /oem/OP
+  is_mounted_rw " /oem/OP" || mount_rw /oem/OP
+  STEPDIR=/oem/OP/OPEN_US/overlay/framework
+else
+  PRODUCT=false; OEM=false
+  STEPDIR=$MODDIR/system/vendor/overlay
+fi
+
 # Check if user wants to reset the Quickstep provider
 if [ -f "$SWITCHER_OUTPUT/reset" ]; then
   RESET=true
-  # Assign $STEPDIR var
-  if [ -f "$SWITCHER_OUTPUT/isProduct" ]; then
-    PRODUCT=true
-    # Yay, magisk supports bind mounting /product now
-    if [ $MAGISK_VER_CODE -ge "19305" ]; then
-      STEPDIR=$MODDIR/system/product/overlay
-    else
-      STEPDIR=/product/overlay
-    fi
-    # Try to mount /product
-    if [ $STEPDIR = "/product/overlay" ]; then
-      is_mounted " /product" || mount /product
-      is_mounted_rw " /product" || mount_rw /product
-    fi
-  else
-    PRODUCT=false
-    STEPDIR=$MODDIR/system/vendor/overlay
-  fi
   # Yeet all installed files into the void
   rm -rf $STEPDIR/QuickstepSwitcherOverlay.apk
   rm -rf $MODDIR/system/etc/permissions/privapp-permissions-quickstepswitcher.xml
@@ -83,30 +90,17 @@ if [ -f "$SWITCHER_OUTPUT/reset" ]; then
   rm -rf $SWITCHER_OUTPUT/reset
   rm -rf $SWITCHER_DIR/shared_prefs/tmp.xml
   rm /data/resource-cache/overlays.list
-  [ $STEPDIR = "/product/overlay" ] && unmount_rw /product
+  if [ "$STEPDIR" == "/product/overlay" ]; then
+    unmount_rw /product
+  elif [ "$STEPDIR" == "/oem/OP/OPEN_US/overlay/framework" ]; then
+    unmount_rw /oem/OP
+    unmount_rw /oem
+  fi
 fi
 
 # Check if user wants to switch the Quickstep provider
 if [ -f "$SWITCHER_OUTPUT/lastChange" ]; then
   CHANGE=true
-  # Assign $STEPDIR var
-  if [ -f "$SWITCHER_OUTPUT/isProduct" ]; then
-    PRODUCT=true
-    # Yay, magisk supports bind mounting /product now
-    if [ $MAGISK_VER_CODE -ge "19305" ]; then
-      STEPDIR=$MODDIR/system/product/overlay
-    else
-      STEPDIR=/product/overlay
-    fi
-    # Try to mount /product
-    if [ $STEPDIR = "/product/overlay" ]; then
-      is_mounted " /product" || mount /product
-      is_mounted_rw " /product" || mount_rw /product
-    fi
-  else
-    PRODUCT=false
-    STEPDIR=$MODDIR/system/vendor/overlay
-  fi
 
   # Assign misc variables
   PERMISSIONXML=$MODDIR/system/etc/permissions/privapp-permissions-quickstepswitcher.xml
@@ -131,9 +125,15 @@ if [ -f "$SWITCHER_OUTPUT/lastChange" ]; then
 
   chmod 644 $OVERLAY; chmod 644 $PERMISSIONXML; chmod 644 $WHITELISTXML
   chmod 755 $SYSTEMIZE_TARGET/*; chmod 644 $SYSTEMIZE_TARGET/*/*
-  [ $STEPDIR == "$MODDIR/system/vendor/overlay" ] && chown 0:2000 $STEPDIR
 
-  [ $STEPDIR = "/product/overlay" ] && unmount_rw /product
+  if [ "$STEPDIR" == "$MODDIR/system/vendor/overlay" ]; then
+    chown 0:2000 $STEPDIR
+  elif [ "$STEPDIR" == "/product/overlay" ]; then
+    unmount_rw /product
+  elif [ "$STEPDIR" == "/oem/OP/OPEN_US/overlay/framework" ]; then
+    unmount_rw /oem/OP
+    unmount_rw /oem
+  fi
 
   # Delete possible bootloop causing file and QuickstepSwitcher created files
   rm /data/resource-cache/overlays.list
@@ -170,4 +170,5 @@ if [ -f "$SWITCHER_OUTPUT/lastChange" ]; then
   echo -e "\n---Module Version---" >> $LOGDIR/$MODID-formatted.log
   echo `grep "versionCode=" $MODDIR/module.prop` >> $LOGDIR/$MODID-formatted.log
 fi
+
 rm -f $LOGDIR/$MODID-tmp.log

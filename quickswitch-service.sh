@@ -1,27 +1,95 @@
 #!/system/bin/sh
+
+# Assign vars
+SWITCHER_DIR=/data/user_de/0/xyz.paphonb.quickstepswitcher
+SWITCHER_OUTPUT=$SWITCHER_DIR/files
+DID_MOUNT_RW=
 MAGISK_VER_CODE=`grep MAGISK_VER_CODE /data/adb/magisk/util_functions.sh`
+
 imageless_magisk() {
   [ $MAGISK_VER_CODE -gt 18100 ]
   return $?
 }
+
+is_mounted() {
+  grep " `readlink -f $1` " /proc/mounts 2>/dev/null
+  return $?
+}
+
+is_mounted_rw() {
+  grep " `readlink -f $1` " /proc/mounts | grep " rw," 2>/dev/null
+  return $?
+}
+
+mount_rw() {
+  mount -o remount,rw $1
+  DID_MOUNT_RW=$1
+}
+
+unmount_rw() {
+  if [ "x$DID_MOUNT_RW" = "x$1" ]; then
+    mount -o remount,ro $1
+  fi
+}
+
 if imageless_magisk; then
   MODDIR=/data/adb/modules/quickstepswitcher
 else
   MODDIR=/sbin/.magisk/img/quickstepswitcher
 fi
+
 # Start logging
 MODID=quickstepswitcher
 set -x 2>$MODDIR/logs/$MODID-service.log
 
-if [ -d "/product/overlay" -a ! -L "/product" ]; then
-  if [ $MAGISK_VER_CODE -ge "19305" ]; then
-    PRODUCT=$MODDIR/system/product/overlay
-  else
-    PRODUCT=/product/overlay
+# Assign $STEPDIR var
+if [ -f "$SWITCHER_OUTPUT/isProduct" ]; then
+  PRODUCT=true
+  # Yay, magisk supports bind mounting /product now
+  # Magisk can't mount /product for now. Will keep this for when it's fixed
+  #if [ $MAGISK_VER_CODE -ge "19305" ]; then
+  #  STEPDIR=$MODDIR/system/product/overlay
+  #else
+  STEPDIR=/product/overlay
+  #fi
+  # Try to mount /product
+  if [ "$STEPDIR" == "/product/overlay" ]; then
+    is_mounted " /product" || mount /product
+    is_mounted_rw " /product" || mount_rw /product
   fi
+elif [ -d /oem/OP ];then
+  OEM=true
+  is_mounted " /oem" || mount /oem
+  is_mounted_rw " /oem" || mount_rw /oem
+  is_mounted " /oem/OP" || mount /oem/OP
+  is_mounted_rw " /oem/OP" || mount_rw /oem/OP
+  STEPDIR=/oem/OP/OPEN_US/overlay/framework
+else
+  PRODUCT=false; OEM=false
+  STEPDIR=$MODDIR/system/vendor/overlay
 fi
+
 if [ ! -d "$MODDIR" ]; then
-  if [ ! -z "$PRODUCT" ]; then rm $PRODUCT/QuickstepSwitcherOverlay.apk; fi
+  if [ "$PRODUCT" == "true" -o "$OEM" == "true" ]; then
+    while [ -f $STEPDIR/QuickstepSwitcherOverlay.apk ]; do
+      if [ "$STEPDIR" == "/product/overlay" ]; then
+        is_mounted " /product" || mount /product
+        is_mounted_rw " /product" || mount_rw /product
+      elif [ "$STEPDIR" == "/oem/OP/OPEN_US/overlay/framework" ];then
+        is_mounted " /oem" || mount /oem
+        is_mounted_rw " /oem" || mount_rw /oem
+        is_mounted " /oem/OP" || mount /oem/OP
+        is_mounted_rw " /oem/OP" || mount_rw /oem/OP
+      fi
+      rm $STEPDIR/QuickstepSwitcherOverlay.apk
+    done
+  fi
+  if [ "$STEPDIR" == "/product/overlay" ]; then
+    unmount_rw /product
+  elif [ "$STEPDIR" == "/oem/OP/OPEN_US/overlay/framework" ]; then
+    unmount_rw /oem/OP
+    unmount_rw /oem
+  fi
   rm -rf /data/resource-cache/*
   rm $0
   exit 0
@@ -29,61 +97,34 @@ elif [ -f "$MODDIR/disable" ]; then
   rm -rf /data/resource-cache/*
 fi
 
-# Assign vars
-SWITCHER_DIR=/data/user_de/0/xyz.paphonb.quickstepswitcher
-SWITCHER_OUTPUT=$SWITCHER_DIR/files
-DID_MOUNT_RW=
-# Assign $STEPDIR var
-if [ -f "$SWITCHER_OUTPUT/isProduct" ]; then
-  PRODUCT=true
-  # Yay, magisk supports bind mounting /product now
-  if [ $MAGISK_VER_CODE -ge "19305" ]; then
-    STEPDIR=$MODDIR/system/product/overlay
-  else
-    STEPDIR=/product/overlay
-  fi
-  # Try to mount /product
-  if [ $STEPDIR = "/product/overlay" ]; then
-    is_mounted " /product" || mount /product
-    is_mounted_rw " /product" || mount_rw /product
-  fi
-else
-  PRODUCT=false
-  STEPDIR=$MODDIR/system/vendor/overlay
-fi
-while [ ! -d $STEPDIR ]; do
+# Hacky way to force the script to run if the post-fs-data.d script failed
+while [ ! -d "$STEPDIR" ]; do
   mkdir -p $STEPDIR
   touch $SWITCHER_OUTPUT/lastChange
 done
+
 if [ -f "$SWITCHER_OUTPUT/lastChange" ]; then
   if [ -f "$SWITCHER_OUTPUT/output/QuickstepSwitcherOverlay.apk" ]; then
-    is_mounted() {
-      grep " `readlink -f $1` " /proc/mounts 2>/dev/null
-      return $?
-    }
-    is_mounted_rw() {
-      grep " `readlink -f $1` " /proc/mounts | grep " rw," 2>/dev/null
-      return $?
-    }
-    mount_rw() {
-      mount -o remount,rw $1
-      DID_MOUNT_RW=$1
-    }
-    unmount_rw() {
-      if [ "x$DID_MOUNT_RW" = "x$1" ]; then
-        mount -o remount,ro $1
-      fi
-    }
-    while [ ! -f $STEPDIR/QuickstepSwitcherOverlay.apk ]; do
+    while [ ! -f "$STEPDIR/QuickstepSwitcherOverlay.apk" ]; do
       sleep 1
-      if [ $STEPDIR = "/product/overlay" ]; then
+      if [ "$STEPDIR" == "/product/overlay" ]; then
         is_mounted " /product" || mount /product
         is_mounted_rw " /product" || mount_rw /product
+      elif [ "$STEPDIR" == "/oem/OP/OPEN_US/overlay/framework" ];then
+        is_mounted " /oem" || mount /oem
+        is_mounted_rw " /oem" || mount_rw /oem
+        is_mounted " /oem/OP" || mount /oem/OP
+        is_mounted_rw " /oem/OP" || mount_rw /oem/OP
       fi
       cp -rf $SWITCHER_OUTPUT/output/QuickstepSwitcherOverlay.apk $STEPDIR/QuickstepSwitcherOverlay.apk
     done
     chmod 644 $STEPDIR/QuickstepSwitcherOverlay.apk
-    [ $STEPDIR = "/product/overlay" ] && unmount_rw /product
+    if [ "$STEPDIR" == "/product/overlay" ]; then
+      unmount_rw /product
+    elif [ "$STEPDIR" == "/oem/OP/OPEN_US/overlay/framework" ]; then
+      unmount_rw /oem/OP
+      unmount_rw /oem
+    fi
     if [ -f "$STEPDIR/QuickstepSwitcherOverlay.apk" ]; then
       rm -rf $SWITCHER_OUTPUT/lastChange
     fi

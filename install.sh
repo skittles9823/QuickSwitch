@@ -142,7 +142,7 @@ on_install() {
   # The following is the default implementation: extract $ZIP/system to $MODPATH
   # Extend/change the logic to whatever you want
   if [ $API -lt "28" ]; then
-    ui_print "QuickSwitch is for Android Pie+ only"
+    abort "QuickSwitch is for Android Pie+ only"
   fi
   ui_print "- Extracting module files"
   unzip -o "$ZIPFILE" 'quickswitch-service.sh' 'quickswitch-post.sh' 'system/*' -d $MODPATH >&2
