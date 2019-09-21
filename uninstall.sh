@@ -32,15 +32,15 @@ unmount_rw() {
   fi
 }
 
-SWITCHER_DIR=/data/user_de/0/xyz.paphonb.quickstepswitcher
-SWITCHER_OUTPUT=$SWITCHER_DIR/files
-
-if [ -f "$SWITCHER_OUTPUT/isProduct" ]; then
-  #if [ $MAGISK_VER_CODE -lt "19305" ]; then
-  STEPDIR=/product/overlay
-  #fi
-  # Try to mount /product
-  if [ "$STEPDIR" == "/product/overlay" ]; then
+if [ -d "/product/overlay" ]; then
+  PRODUCT=true
+  # Yay, magisk supports bind mounting /product now
+  if [ $MAGISK_VER_CODE -ge "19308" ]; then
+    MOUNTPRODUCT=
+    STEPDIR=$MODDIR/system/product/overlay
+  else
+    MOUNTPRODUCT=true
+    STEPDIR=/product/overlay
     is_mounted " /product" || mount /product
     is_mounted_rw " /product" || mount_rw /product
   fi
@@ -52,10 +52,10 @@ elif [ -d /oem/OP ];then
   is_mounted_rw " /oem/OP" || mount_rw /oem/OP
   STEPDIR=/oem/OP/OPEN_US/overlay/framework
 fi
-if [ "$STEPDIR" == "/product/overlay" ]; then
+if [ "$MOUNTPRODUCT" ]; then
   is_mounted " /product" || mount /product
   is_mounted_rw " /product" || mount_rw /product
-elif [ "$STEPDIR" == "/oem/OP/OPEN_US/overlay/framework" ];then
+elif [ "$OEM" ];then
   is_mounted " /oem" || mount /oem
   is_mounted_rw " /oem" || mount_rw /oem
   is_mounted " /oem/OP" || mount /oem/OP
@@ -64,12 +64,11 @@ fi
 
 rm -rf $STEPDIR/QuickstepSwitcherOverlay.apk
 
-if [ "$STEPDIR" == "/product/overlay" ]; then
-  unmount_rw /product
-elif [ "$STEPDIR" == "/oem/OP/OPEN_US/overlay/framework" ]; then
-  unmount_rw /oem/OP
-  unmount_rw /oem
+if [ "$MOUNTPRODUCT" ]; then
+  is_mounted_rw " /product" || unmount_rw /product
+elif [ "$OEM" ];then
+  is_mounted_rw " /oem" && unmount_rw /oem
+  is_mounted_rw " /oem/OP" && unmount_rw /oem/OP
 fi
 
-rm -rf /data/resource-cache/*
-rm -f /data/adb/post-fs-data.d/quickswitch-post.sh
+find /data/resource-cache/ -name *QuickstepSwitcherOverlay* -exec rm -rf {} \;

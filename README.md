@@ -3,25 +3,16 @@ QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep
 
 ## Donations:
 - If you wish to donate to [Paphonb](https://github.com/paphonb) for creating the QuickSwitch app you can do so [here](https://paypal.me/Paphonb).
-- Or if you wish to donate to [Skittles9823](https://github.com/skittles9823) for making the module and handling support you can do so [here](https://paypal.me/Skittles2398).
-
-## Launcher Compatibility (This list will never be definitive):
-- LawnchairV2 (APKMirror) (Playstore beta soon™)
-- Hyperion (Playstore)
-- Pixel Launcher (APKMirror)
-- Launcher3Quickstep (Quickstep)
-- OnePlus Launcher (Paphonbs rooted port)
-- ASUS ZenUI Launcher (Paphonbs port)
-- Samsung Experience Launcher (Paphonbs port - WIP - not public)
-- Many more Launcher3 forks that have merged the pie changes
+- Or if you wish to donate to [Skittles9823](https://github.com/skittles9823) for making the module, scripts, and handling support you can do so [here](https://paypal.me/Skittles2398).
 
 ## Disclaimer
 - A full list of compatible launchers will not be provided as the app autodetects which launchers are compatible.
 - Nova will likely never support QuickSwitch unless they decide to add support for the Razer Phone naitivly.
+- MIUI does not have the necessary APIs to set third party launchers as the recents providers and as such is not supported.
 
 ## Requirements:
 - Magisk 18+
-- Android 9.0 Pie
+- Android 9+
 
 ## Installation
 1. Flash this module.
@@ -52,6 +43,13 @@ QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep
 You can get support for the module in either the [Telegram group](https://t.me/QuickstepSwitcherSupport) or the [XDA Thread](https://forum.xda-developers.com/apps/magisk/module-quickswitch-universal-quickstep-t3884797/).
 
 ## Changelog:
+### v3.0.0
+- completely rewrite the app and the module backend. Now the app uses a shell binary as the backend to
+  remove the need for bootscripts
+- re-add the $MODDIR/product/overlay install path as the Magisk issue has been fixed
+- added the ability to change the navigation bar height and make the pill look like the Q gesture pill from the public betas
+- added a check for MIUI which will abort the installation of the module
+
 ### v2.0.9
 - add support for /oem/OP/OPEN_US/overlay/framework as the overlay dir
 - temporarily reverted the /product change so Magisk canary users have a somewhat working QuickSwitch

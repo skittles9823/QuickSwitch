@@ -144,26 +144,38 @@ on_install() {
   if [ $API -lt "28" ]; then
     abort "QuickSwitch is for Android Pie+ only"
   fi
-  ui_print "- Extracting module files"
-  unzip -o "$ZIPFILE" 'quickswitch-service.sh' 'quickswitch-post.sh' 'system/*' -d $MODPATH >&2
-  cp -rf $MODPATH/quickswitch-service.sh /data/adb/service.d/
-  cp -rf $MODPATH/quickswitch-post.sh /data/adb/post-fs-data.d/
-  chmod 755 /data/adb/service.d/quickswitch-service.sh
-  chmod 755 /data/adb/post-fs-data.d/quickswitch-post.sh
-  rm -rf /data/adb/service.d/quickswitch.sh
-  rm -rf $MODPATH/quickswitch-service.sh
-  rm -rf $MODPATH/quickswitch-post.sh
-  # Custom install stuffs
-  SWITCHDIR=/data/user_de/0/xyz.paphonb.quickstepswitcher
-  if imageless_magisk; then PROPDIR="$NVBASE/modules/$MODID"; else PROPDIR="/sbin/.magisk/img/$MODID"; fi
-  if [ `grep "versionCode=" $PROPDIR/module.prop | sed 's/versionCode=//'` -le 114 ];then
-    rm -rf $SWITCHDIR/shared_prefs/*
-    rm -rf $SWITCHDIR/files/*
-    rm -rf /product/overlay/QuickstepSwitcherOverlay.apk
-    ui_print "Major upgrade. Removing old QuickSwitch files."
+  VEN=/system/vendor
+  [ -L /system/vendor ] && VEN=/vendor
+  if [ -f $VEN/build.prop ]; then BUILDS="/system/build.prop $VEN/build.prop"; else BUILDS="/system/build.prop"; fi
+  # Thanks Narsil/Sauron for the huge props list for various android systems
+  # Far easier to look there then ask users for their build.props
+  MIUI=$(grep "ro.miui.ui.version.*" $BUILDS)
+  if [ $MIUI ]; then
+    ui_print " MIUI is not supported"
+    abort " Aborting..."
   fi
-  rm -rf /data/resource-cache/*
-  [ -d $SWITCHDIR ] && touch $SWITCHDIR/files/lastChange
+  ui_print "- Extracting module files"
+  unzip -o "$ZIPFILE" 'overlays/*' 'system/*' -d $MODPATH >&2
+  rm -rf /data/adb/service.d/quickswitch.sh
+  rm -rf /data/adb/service.d/quickswitch-service.sh
+  rm -rf /data/adb/post-fs-data.d/quickswitch-post.sh
+  # Custom install stuffs
+  if imageless_magisk; then MODULEDIR="$NVBASE/modules/$MODID"; else MODULEDIR="/sbin/.magisk/img/$MODID"; fi
+  find /data/resource-cache/ -name *QuickstepSwitcherOverlay* -exec rm -rf {} \;
+  if [  `grep "versionCode=" $MODULEDIR/module.prop | sed 's/versionCode=//'` -ge 300 ];then
+    if [ -d $MODULEDIR ]; then
+      for i in $(find $MODULEDIR/system/* \
+        -type d -maxdepth 0 | sed "/bin/ d; /^app/ d"); do
+          cp -rf "$i" $MODPATH/system/
+      done
+    fi
+  else
+    for i in $(find $MODULEDIR/* \
+      -maxdepth 0 | sed "/^module.prop/ d"); do
+        rm -rf "$i"
+    done
+    ui_print " Major upgrade! clearing out all old files and directories."
+  fi
   ui_print "!!!!!!!!!!!!!!!!!!!!!!!!!Important!!!!!!!!!!!!!!!!!!!!!!!!"
   ui_print "!     RIL (Bluetooth, WiFi, etc) issues are ROM side     !"
   ui_print "!   If you lose functionality after setting a provider   !"
@@ -195,6 +207,25 @@ on_install() {
 set_permissions() {
   # The following is the default rule, DO NOT remove
   set_perm_recursive $MODPATH 0 0 0755 0644
+
+  # perm stuff by veez21 @ xda-developers, slightly modified by me :)
+  if [ "$IS64BIT" ]; then
+    AAPT=aapt64
+  elif [ "$ARCH" = "x86" ]; then
+    AAPT=aaptx86
+  else
+    AAPT=aapt
+  fi
+  cp -af $TMPDIR/$AAPT $MODPATH/aapt
+  bin=xbin
+  if [ ! -d /system/xbin ]; then
+    bin=bin
+    mkdir $MODPATH/system/$bin
+    mv $MODPATH/system/xbin/quickswitch $MODPATH/system/$bin
+    rm -rf $MODPATH/system/xbin
+  fi
+  set_perm $MODPATH/aapt 0 2000 0755
+  set_perm $MODPATH/system/$bin/quickswitch 0 2000 0777
 
   # Here are some examples:
   # set_perm_recursive  $MODPATH/system/lib       0     0       0755      0644

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<bool name="config_swipe_up_gesture_setting_available">true</bool>
+	<bool name="config_custom_swipe_up_gesture_setting_available">true</bool>
+</resources>
