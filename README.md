@@ -44,7 +44,8 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 
 ## Changelog:
 ### v3.0.0
-- completely rewrite the app and the module backend. Now the app uses a shell binary as the backend to remove the need for bootscripts
+- completely rewrite the app and the module backend. Now the app uses a shell binary as the backend to
+  remove the need for bootscripts
 - re-add the $MODDIR/product/overlay install path as the Magisk issue has been fixed
 - added the ability to change the navigation bar height and make the pill look like the Q gesture pill
 - added a check for MIUI which will abort the installation of the module

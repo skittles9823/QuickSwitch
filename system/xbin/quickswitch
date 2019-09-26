@@ -144,9 +144,8 @@ setvars(){
       STEPDIR=$MODDIR/system/product/overlay
     else
       if [ $(resetprop ro.build.version.sdk) -ge 29 ]; then
-        echo "\nMagisk Canary 19400+ is required for users on Android 10"
+        echo "\nMagisk 19400+ is required for users on Android 10"
         echo "Please update Magisk and try again."
-        exit 1
       fi
       MOUNTPRODUCT=true
       STEPDIR=/product/overlay

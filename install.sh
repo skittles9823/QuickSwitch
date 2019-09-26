@@ -209,7 +209,7 @@ set_permissions() {
   set_perm_recursive $MODPATH 0 0 0755 0644
 
   # perm stuff by veez21 @ xda-developers, slightly modified by me :)
-  if [ "$IS64BIT" ]; then
+  if [ "$ARCH" = "arm64" ] || [ "$ARCH" = "x64" ]; then
     AAPT=aapt64
   elif [ "$ARCH" = "x86" ]; then
     AAPT=aaptx86
