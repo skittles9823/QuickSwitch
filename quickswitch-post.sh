@@ -51,17 +51,16 @@ unmount_rw() {
 }
 
 # Assign $STEPDIR var
-if [ -f "$SWITCHER_OUTPUT/isProduct" ]; then
+if [ -d "/product/overlay" ]; then
   PRODUCT=true
   # Yay, magisk supports bind mounting /product now
-  # Magisk can't mount /product for now. Will keep this for when it's fixed
-  #if [ $MAGISK_VER_CODE -ge "19305" ]; then
-  #  STEPDIR=$MODDIR/system/product/overlay
-  #else
-  STEPDIR=/product/overlay
-  #fi
-  # Try to mount /product
-  if [ "$STEPDIR" == "/product/overlay" ]; then
+  MAGISK_VER_CODE=$(grep "MAGISK_VER_CODE=" /data/adb/magisk/util_functions.sh | awk -F = '{ print $2 }')
+  if [ $MAGISK_VER_CODE -ge "19308" ]; then
+    MOUNTPRODUCT=
+    STEPDIR=$MODDIR/system/product/overlay
+  else
+    MOUNTPRODUCT=true
+    STEPDIR=/product/overlay
     is_mounted " /product" || mount /product
     is_mounted_rw " /product" || mount_rw /product
   fi
@@ -73,9 +72,19 @@ elif [ -d /oem/OP ];then
   is_mounted_rw " /oem/OP" || mount_rw /oem/OP
   STEPDIR=/oem/OP/OPEN_US/overlay/framework
 else
-  PRODUCT=false; OEM=false
+  PRODUCT=; OEM=; MOUNTPRODUCT=
   STEPDIR=$MODDIR/system/vendor/overlay
 fi
+if [ "$MOUNTPRODUCT" ]; then
+  is_mounted " /product" || mount /product
+  is_mounted_rw " /product" || mount_rw /product
+elif [ "$OEM" ];then
+  is_mounted " /oem" || mount /oem
+  is_mounted_rw " /oem" || mount_rw /oem
+  is_mounted " /oem/OP" || mount /oem/OP
+  is_mounted_rw " /oem/OP" || mount_rw /oem/OP
+fi
+
 
 # Check if user wants to reset the Quickstep provider
 if [ -f "$SWITCHER_OUTPUT/reset" ]; then
@@ -90,6 +99,7 @@ if [ -f "$SWITCHER_OUTPUT/reset" ]; then
   rm -rf $SWITCHER_OUTPUT/reset
   rm -rf $SWITCHER_DIR/shared_prefs/tmp.xml
   rm /data/resource-cache/overlays.list
+  find /data/resource-cache/ -name *QuickstepSwitcherOverlay* -exec rm -rf {} \;
   if [ "$STEPDIR" == "/product/overlay" ]; then
     unmount_rw /product
   elif [ "$STEPDIR" == "/oem/OP/OPEN_US/overlay/framework" ]; then
@@ -169,6 +179,7 @@ if [ -f "$SWITCHER_OUTPUT/lastChange" ]; then
   echo `grep "MAGISK_VER_CODE=" /data/adb/magisk/util_functions.sh | sed "s/MAGISK_VER_CODE/MagiskVersion/"` >> $LOGDIR/$MODID-formatted.log
   echo -e "\n---Module Version---" >> $LOGDIR/$MODID-formatted.log
   echo `grep "versionCode=" $MODDIR/module.prop` >> $LOGDIR/$MODID-formatted.log
+  find $MODDIR > $LOGDIR/find.log
 fi
 
 rm -f $LOGDIR/$MODID-tmp.log

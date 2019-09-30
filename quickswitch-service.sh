@@ -43,17 +43,16 @@ MODID=quickstepswitcher
 set -x 2>$MODDIR/logs/$MODID-service.log
 
 # Assign $STEPDIR var
-if [ -f "$SWITCHER_OUTPUT/isProduct" ]; then
+if [ -d "/product/overlay" ]; then
   PRODUCT=true
   # Yay, magisk supports bind mounting /product now
-  # Magisk can't mount /product for now. Will keep this for when it's fixed
-  #if [ $MAGISK_VER_CODE -ge "19305" ]; then
-  #  STEPDIR=$MODDIR/system/product/overlay
-  #else
-  STEPDIR=/product/overlay
-  #fi
-  # Try to mount /product
-  if [ "$STEPDIR" == "/product/overlay" ]; then
+  MAGISK_VER_CODE=$(grep "MAGISK_VER_CODE=" /data/adb/magisk/util_functions.sh | awk -F = '{ print $2 }')
+  if [ $MAGISK_VER_CODE -ge "19308" ]; then
+    MOUNTPRODUCT=
+    STEPDIR=$MODDIR/system/product/overlay
+  else
+    MOUNTPRODUCT=true
+    STEPDIR=/product/overlay
     is_mounted " /product" || mount /product
     is_mounted_rw " /product" || mount_rw /product
   fi
@@ -65,8 +64,17 @@ elif [ -d /oem/OP ];then
   is_mounted_rw " /oem/OP" || mount_rw /oem/OP
   STEPDIR=/oem/OP/OPEN_US/overlay/framework
 else
-  PRODUCT=false; OEM=false
+  PRODUCT=; OEM=; MOUNTPRODUCT=
   STEPDIR=$MODDIR/system/vendor/overlay
+fi
+if [ "$MOUNTPRODUCT" ]; then
+  is_mounted " /product" || mount /product
+  is_mounted_rw " /product" || mount_rw /product
+elif [ "$OEM" ];then
+  is_mounted " /oem" || mount /oem
+  is_mounted_rw " /oem" || mount_rw /oem
+  is_mounted " /oem/OP" || mount /oem/OP
+  is_mounted_rw " /oem/OP" || mount_rw /oem/OP
 fi
 
 if [ ! -d "$MODDIR" ]; then
