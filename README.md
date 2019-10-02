@@ -5,16 +5,6 @@ QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep
 - If you wish to donate to [Paphonb](https://github.com/paphonb) for creating the QuickSwitch app you can do so [here](https://paypal.me/Paphonb).
 - Or if you wish to donate to [Skittles9823](https://github.com/skittles9823) for making the module and handling support you can do so [here](https://paypal.me/Skittles2398).
 
-## Launcher Compatibility (This list will never be definitive):
-- LawnchairV2 (APKMirror) (Playstore beta soon™)
-- Hyperion (Playstore)
-- Pixel Launcher (APKMirror)
-- Launcher3Quickstep (Quickstep)
-- OnePlus Launcher (Paphonbs rooted port)
-- ASUS ZenUI Launcher (Paphonbs port)
-- Samsung Experience Launcher (Paphonbs port - WIP - not public)
-- Many more Launcher3 forks that have merged the pie changes
-
 ## Disclaimer
 - A full list of compatible launchers will not be provided as the app autodetects which launchers are compatible.
 - Nova will likely never support QuickSwitch unless they decide to add support for the Razer Phone naitivly.
@@ -22,6 +12,7 @@ QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep
 ## Requirements:
 - Magisk 18+
 - Android 9.0 Pie
+- Android 10 requires Magisk 19.5 canary or later to work correctly
 
 ## Installation
 1. Flash this module.
