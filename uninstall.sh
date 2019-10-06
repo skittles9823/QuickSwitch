@@ -35,7 +35,7 @@ unmount_rw() {
 if [ -d "/product/overlay" ]; then
   PRODUCT=true
   # Yay, magisk supports bind mounting /product now
-  if [ $MAGISK_VER_CODE -ge "19308" ]; then
+  if [ $MAGISK_VER_CODE -ge "19400" ]; then
     MOUNTPRODUCT=
     STEPDIR=$MODDIR/system/product/overlay
   else

@@ -146,6 +146,7 @@ setvars(){
       if [ $(resetprop ro.build.version.sdk) -ge 29 ]; then
         echo "\nMagisk 19400+ is required for users on Android 10"
         echo "Please update Magisk and try again."
+        exit $?
       fi
       MOUNTPRODUCT=true
       STEPDIR=/product/overlay
@@ -232,8 +233,10 @@ $permissions
     navheight=$(cat $MODDIR/nav)
     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 <resources>
-	<dimen name=\"navigation_bar_height\">${navheight}dp</dimen>
-	<dimen name=\"navigation_bar_height_landscape\">${navheight}dp</dimen>
+	<dimen name=\"navigation_bar_height\">${2}dp</dimen>
+	<dimen name=\"navigation_bar_height_landscape\">${2}dp</dimen>
+	<dimen name=\"navigation_bar_frame_height\">${2}dip</dimen>
+	<dimen name=\"navigation_bar_frame_height_landscape\">${2}dip</dimen>
 </resources>" > $OVERLAYDIR/overlay/values/dimens.xml
     rm $MODDIR/nav
   fi
