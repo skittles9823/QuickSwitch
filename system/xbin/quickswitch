@@ -41,6 +41,7 @@ NAVOVERLAYDIR=$MODDIR/overlays/qnav
 RAND=$(echo $RANDOM | sed -r 's|^(...).*|\1|')
 QNAV=
 DID_MOUNT_RW=
+NOBACK=
 
 # Functions to check if dirs is mounted
 is_mounted() {
@@ -139,14 +140,13 @@ setvars(){
     PRODUCT=true
     # Yay, magisk supports bind mounting /product now
     MAGISK_VER_CODE=$(grep "MAGISK_VER_CODE=" /data/adb/magisk/util_functions.sh | awk -F = '{ print $2 }')
-    if [ $MAGISK_VER_CODE -ge "19400" ]; then
+    if [ $MAGISK_VER_CODE -ge "20000" ]; then
       MOUNTPRODUCT=
       STEPDIR=$MODDIR/system/product/overlay
     else
       if [ $(resetprop ro.build.version.sdk) -ge 29 ]; then
-        echo "\nMagisk 19400+ is required for users on Android 10"
+        echo "\nMagisk v20 is required for users on Android 10"
         echo "Please update Magisk and try again."
-        exit $?
       fi
       MOUNTPRODUCT=true
       STEPDIR=/product/overlay
@@ -228,6 +228,15 @@ $permissions
 <resources>
 	<string name=\"config_recentsComponentName\">$1/com.android.quickstep.RecentsActivity</string>
 </resources>" > $OVERLAYDIR/overlay/values/strings.xml
+
+  if [ $NOBACK ]; then
+    echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
+<resources>
+	<dimen name=\"config_backGestureInset\">0dp</dimen>
+</resources>" > $OVERLAYDIR/overlay/values/config.xml
+  else
+    rm $OVERLAYDIR/overlay/values/config.xml
+  fi
 
   if [ -f "$MODDIR/nav" ]; then
     navheight=$(cat $MODDIR/nav)
@@ -325,6 +334,8 @@ for arg in $(echo ${@}); do
       continue;;
     --grid) resetprop ro.recents.grid true
       echo "ro.recents.grid=true" > $MODDIR/system.prop
+      continue;;
+    --noback) NOBACK=true
       continue;;
     --ch) switch_providers "$opt2"
       continue;;

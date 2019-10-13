@@ -11,7 +11,7 @@ QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep
 - MIUI does not have the necessary APIs to set third party launchers as the recents providers and as such is not supported.
 
 ## Requirements:
-- Magisk 18+
+- Magisk 18+ (Android 10 needs Magisk v20 or higher)
 - Android 9+
 
 ## Installation
