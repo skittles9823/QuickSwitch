@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="xyz.paphonb.quickstepswitcher.overlay">
-    <overlay android:priority="98" android:targetPackage="android" android:isStatic="true"/>
+    <overlay android:priority="999" android:targetPackage="android" android:isStatic="true"/>
     <application android:label="QuickSwitch Overlay"/>
 </manifest>

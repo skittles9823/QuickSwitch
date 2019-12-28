@@ -209,13 +209,10 @@ set_permissions() {
   set_perm_recursive $MODPATH 0 0 0755 0644
 
   # perm stuff by veez21 @ xda-developers, slightly modified by me :)
-  if [ "$ARCH" = "arm64" ] || [ "$ARCH" = "x64" ]; then
-    AAPT=aapt64
-  elif [ "$ARCH" = "x86" ]; then
-    AAPT=aaptx86
-  else
-    AAPT=aapt
-  fi
+  chmod +x $TMPDIR/aap*
+  [ "$($TMPDIR/aaptx86 v)" ] && AAPT=aaptx86
+  [ "$($TMPDIR/aapt v)" ] && AAPT=aapt
+  [ "$($TMPDIR/aapt64 v)" ] && AAPT=aapt64
   cp -af $TMPDIR/$AAPT $MODPATH/aapt
   bin=xbin
   if [ ! -d /system/xbin ]; then
