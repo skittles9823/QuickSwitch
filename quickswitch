@@ -1,4 +1,4 @@
-#!/system/bin/sh
+ #!/system/bin/sh
 # Terminal Magisk Mod Template
 # by veez21 @ xda-developers
 # Slimmed down for use as an app backend by @Skittles9823
@@ -7,8 +7,11 @@
 ID="quickstepswitcher"
 
 # Magisk Mod Directory
-MOUNTPATH="/data/adb/modules"
-[ ! -d $MOUNTPATH ] && MOUNTPATH="/sbin/.magisk/img"
+if [ -d /data/adb/modules_update/$ID/quickswitch]; then
+  MOUNTPATH="/data/adb/modules_update"
+else
+  MOUNTPATH="/data/adb/modules"
+fi
 MODDIR="$MOUNTPATH/$ID"
 [ ! -d $MODDIR ] && { exit 1; }
 
@@ -33,7 +36,7 @@ set -x 2>$VERLOG
 ########
 # Main #
 ########
-API=$(grep_prop ro.build.version.sdk)
+API=$(getprop ro.build.version.sdk)
 PATH="/sbin/.magisk/busybox:/sbin/:$PATH"
 alias aapt='$MODDIR/aapt'
 OVERLAYDIR=$MODDIR/overlays/quickswitchoverlay
@@ -207,6 +210,9 @@ switch_providers(){
     fi
     if [ ! $(echo $origdir | grep "apk") ]; then
       echo "\nCould not systemise launcher..."
+      get_logs
+      [ "$SECHANGE" ] && setenforce $SESTATUS
+      exit 1
     fi
     cp -rf $origdir \
       $SYSTEMIZE_TARGET/QuickSwitch-"${1}"-"${RAND}"/QuickSwitch-"${1}"-"${RAND}".apk
@@ -262,6 +268,9 @@ $permissions
     echo "\nOverlay successfully copied..."
   else
     echo "\nThe overlay was not copied, please send logs to the developer."
+    get_logs
+    [ "$SECHANGE" ] && setenforce $SESTATUS
+    exit 1
   fi
 
   set_perms $1

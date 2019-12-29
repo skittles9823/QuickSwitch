@@ -1,10 +1,15 @@
 #!/sbin/sh
 
-# Default permissions
+#################
+# Initialization
+#################
+
 umask 022
 
-# Initial cleanup
+# Global vars
 TMPDIR=/dev/tmp
+PERSISTDIR=/sbin/.magisk/mirror/persist
+
 rm -rf $TMPDIR 2>/dev/null
 mkdir -p $TMPDIR
 
@@ -19,15 +24,8 @@ require_new_magisk() {
 }
 
 is_legacy_script() {
-  # Parse install.sh and see if these are declared
-  # If all pass then assume we are running legacy install.sh
-  unzip -o "$ZIPFILE" install.sh -d $TMPDIR >&2
-  local INS=$TMPDIR/install.sh
-  [ -f $INS ] || return 1
-  grep -q '^SKIPMOUNT=' $INS || return 1
-  grep -q '^on_install()' $INS || return 1
-  grep -q '^set_permissions()' $INS || return 1
-  return 0
+  unzip -l "$ZIPFILE" install.sh | grep -q install.sh
+  return $?
 }
 
 print_modname() {
@@ -43,9 +41,9 @@ print_modname() {
   ui_print "*******************"
 }
 
-###############
+##############
 # Environment
-###############
+##############
 
 OUTFD=$2
 ZIPFILE=$3
@@ -69,9 +67,9 @@ api_level_arch_detect
 # Setup busybox and binaries
 $BOOTMODE && boot_actions || recovery_actions
 
-###############
+##############
 # Preparation
-###############
+##############
 
 # Extract prop file
 unzip -o "$ZIPFILE" module.prop -d $TMPDIR >&2
@@ -87,12 +85,12 @@ MODNAME=`grep_prop name $TMPDIR/module.prop`
 rm -rf $MODPATH 2>/dev/null
 mkdir -p $MODPATH
 
-###########
+##########
 # Install
-###########
+##########
 
 if is_legacy_script; then
-  unzip -oj "$ZIPFILE" module.prop uninstall.sh 'common/*' -d $TMPDIR >&2
+  unzip -oj "$ZIPFILE" module.prop install.sh uninstall.sh 'common/*' -d $TMPDIR >&2
 
   # Load install script
   . $TMPDIR/install.sh
@@ -124,14 +122,18 @@ if is_legacy_script; then
 else
   print_modname
 
-  ui_print "- Extracting module files"
-  unzip -o "$ZIPFILE" -d $MODPATH
+  unzip -o "$ZIPFILE" customize.sh -d $MODPATH >&2
 
-  # Default permissions
-  set_perm_recursive $MODPATH 0 0 0755 0644
+  if ! grep -q '^SKIPUNZIP=' $MODPATH/customize.sh 2>/dev/null; then
+    ui_print "- Extracting module files"
+    unzip -o "$ZIPFILE" -x 'META-INF/*' -d $MODPATH >&2
 
-  # Load install script
-  [ -f $MODPATH/install.sh ] && . $MODPATH/install.sh
+    # Default permissions
+    set_perm_recursive $MODPATH 0 0 0755 0644
+  fi
+
+  # Load customization script
+  [ -f $MODPATH/customize.sh ] && . $MODPATH/customize.sh
 fi
 
 # Handle replace folders
@@ -146,10 +148,18 @@ if $BOOTMODE; then
   cp -af $MODPATH/module.prop $NVBASE/modules/$MODID/module.prop
 fi
 
+# Copy over custom sepolicy rules
+if [ -f $MODPATH/sepolicy.rule -a -e $PERSISTDIR ]; then
+  ui_print "- Installing custom sepolicy patch"
+  PERSISTMOD=$PERSISTDIR/magisk/$MODID
+  mkdir -p $PERSISTMOD
+  cp -af $MODPATH/sepolicy.rule $PERSISTMOD/sepolicy.rule
+fi
+
 # Remove stuffs that don't belong to modules
 rm -rf \
-$MODPATH/system/placeholder $MODPATH/install.sh \
-$MODPATH/META-INF $MODPATH/README.md 2>/dev/null
+$MODPATH/system/placeholder $MODPATH/customize.sh \
+$MODPATH/README.md $MODPATH/.git* 2>/dev/null
 
 ##############
 # Finalizing
