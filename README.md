@@ -43,6 +43,9 @@ QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep
 You can get support for the module in either the [Telegram group](https://t.me/QuickstepSwitcherSupport) or the [XDA Thread](https://forum.xda-developers.com/apps/magisk/module-quickswitch-universal-quickstep-t3884797/).
 
 ## Changelog:
+### v3.0.1
+- fix small bug
+
 ### v3.0.0
 - completely rewrite the app and the module backend. Now the app uses a shell binary as the backend to
   remove the need for bootscripts
