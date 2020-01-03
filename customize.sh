@@ -40,6 +40,7 @@ rm -rf /data/adb/service.d/quickswitch-service.sh
 rm -rf /data/adb/post-fs-data.d/quickswitch-post.sh
 # Custom install stuffs
 if imageless_magisk; then MODULEDIR="/data/adb/modules/$MODID"; else MODULEDIR="/sbin/.magisk/img/$MODID"; fi
+rm -rf /data/resource-cache/overlays.list
 find /data/resource-cache/ -name *QuickstepSwitcherOverlay* -exec rm -rf {} \;
 if [  `grep "versionCode=" $MODULEDIR/module.prop | sed 's/versionCode=//'` -ge 300 ];then
   if [ -d $MODULEDIR ]; then
