@@ -39,19 +39,19 @@ rm -rf /data/adb/service.d/quickswitch.sh
 rm -rf /data/adb/service.d/quickswitch-service.sh
 rm -rf /data/adb/post-fs-data.d/quickswitch-post.sh
 # Custom install stuffs
-if imageless_magisk; then MODULEDIR="/data/adb/modules/$MODID"; else MODULEDIR="/sbin/.magisk/img/$MODID"; fi
 rm -rf /data/resource-cache/overlays.list
 find /data/resource-cache/ -name *QuickstepSwitcherOverlay* -exec rm -rf {} \;
-if [  `grep "versionCode=" $MODULEDIR/module.prop | sed 's/versionCode=//'` -ge 300 ];then
+MODULEDIR="/data/adb/modules/$MODID"
+MODVER=$(grep_prop versionCode $MODULEDIR/module.prop)
+if [  $MODVER -ge 300 ];then
   if [ -d $MODULEDIR ]; then
-    for i in $(find $MODULEDIR/system/* \
-      -type d -maxdepth 0 | sed "/bin/ d; /^app/ d"); do
+    ui_print "Module updating - retaining current provider"
+    for i in $(find $MODULEDIR/system/* -type d -maxdepth 0 | sed "/bin/ d; /^app/ d"); do
         cp -rf "$i" $MODPATH/system/
     done
   fi
 else
-  for i in $(find $MODULEDIR/* \
-    -maxdepth 0 | sed "/^module.prop/ d"); do
+  for i in $(find $MODULEDIR/* -maxdepth 0 | sed "/^module.prop/ d"); do
       rm -rf "$i"
   done
   ui_print " Major upgrade! clearing out all old files and directories."
