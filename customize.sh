@@ -46,7 +46,7 @@ MODVER=$(grep_prop versionCode $MODULEDIR/module.prop)
 if [  $MODVER -ge 300 ];then
   if [ -d $MODULEDIR ]; then
     ui_print "Module updating - retaining current provider"
-    for i in $(find $MODULEDIR/system/* -type d -maxdepth 0 | sed "/bin/ d; /^app/ d"); do
+    for i in $(find $MODULEDIR/system/* -type d -maxdepth 0 | sed "/^app/ d"); do
         cp -rf "$i" $MODPATH/system/
     done
   fi
