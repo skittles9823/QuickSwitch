@@ -44,7 +44,7 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 
 ## Changelog:
 ### v3.0.4
-- remove selinux dependant commands in favour of grepping packages.xml and listning contense of /data/app to find launcher dirs
+- remove selinux dependant commands in favour of grepping packages.xml and listing the contents of /data/app to find launcher dirs
 - sign the overlay again
 - I'd like to thank osm0sis@XDA for helping with this update
 
