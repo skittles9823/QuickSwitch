@@ -1,0 +1,8 @@
+#!/system/bin/sh
+# zipsigner: wrapper to run zipsigner.jar from terminal
+# osm0sis @ xda-developers
+
+dir="$(cd "$(dirname "$0")"; pwd)";
+
+dalvikvm -Djava.io.tmpdir=. -Xnoimage-dex2oat -cp $dir/zipsigner-*.jar com.topjohnwu.utils.ZipSigner "$@";
+

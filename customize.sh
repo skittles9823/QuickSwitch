@@ -28,7 +28,7 @@ if [ $MIUI ]; then
 fi
 ui_print "- Extracting module files"
 
-unzip -o "$ZIPFILE" 'overlays/*' 'system/*' 'common/*' 'module.prop' 'uninstall.sh' 'quickswitch' 'QuickSwitch.apk' -d $MODPATH >&2
+unzip -o "$ZIPFILE" 'overlays/*' 'system/*' 'common/*' 'module.prop' 'zipsigner*' 'uninstall.sh' 'quickswitch' 'QuickSwitch.apk' -d $MODPATH >&2
 chmod +x $MODPATH/common/*
 [ "$($MODPATH/common/aaptx86 v)" ] && AAPT=aaptx86
 [ "$($MODPATH/common/aapt v)" ] && AAPT=aapt
@@ -70,3 +70,5 @@ pm install $MODPATH/QuickSwitch.apk
 set_perm_recursive $MODPATH 0 0 0755 0644
 set_perm $MODPATH/aapt 0 2000 0755
 set_perm $MODPATH/quickswitch 0 2000 0777
+set_perm $MODPATH/zipsigner 0 0 0755
+set_perm $MODPATH/zipsigner-3.0-dexed.jar 0 0 0644

@@ -1,4 +1,4 @@
- #!/system/bin/sh
+#!/system/bin/sh
 # Terminal Magisk Mod Template
 # by veez21 @ xda-developers
 # Slimmed down for use as an app backend by @Skittles9823
@@ -14,6 +14,8 @@ else
 fi
 MODDIR="$MOUNTPATH/$ID"
 [ ! -d $MODDIR ] && { exit 1; }
+
+cd $MODDIR
 
 # Set Log Files
 # > Logs should go in this file
@@ -39,6 +41,8 @@ set -x 2>$VERLOG
 API=$(getprop ro.build.version.sdk)
 PATH="/sbin/.magisk/busybox:/sbin/:$PATH"
 alias aapt='$MODDIR/aapt'
+alias sign='$MODDIR/zipsigner'
+xml=/data/system/packages.xml
 OVERLAYDIR=$MODDIR/overlays/quickswitchoverlay
 NAVOVERLAYDIR=$MODDIR/overlays/qnav
 RAND=$(echo $RANDOM | sed -r 's|^(...).*|\1|')
@@ -155,6 +159,7 @@ setvars(){
       if [ $(resetprop ro.build.version.sdk) -ge 29 ]; then
         echo "\nMagisk v20 is required for users on Android 10"
         echo "Please update Magisk and try again."
+        exit 1
       fi
       MOUNTPRODUCT=true
       STEPDIR=/product$SUFFIX
@@ -203,15 +208,18 @@ switch_providers(){
     mkdir -p $SYSTEMIZE_TARGET/QuickSwitch-${1}-${RAND}
     mkdir -p $MODDIR/system/etc/permissions
     mkdir -p $MODDIR/system/etc/sysconfig
-    origdir=$(pm path $1 | awk -F : '{ print $2 }')
-    if [ ! $(echo $origdir | grep "apk") ]; then
-      path=$(pm path $1)
-      origdir=$(echo $path | awk -F : '{ print $2 }')
+    package=`echo $1 | cut -d- -f2-`
+    sysapk=$(grep "updated-package name=\"$package\"" $xml | grep -o 'codePath=.*$' | cut -d\" -f2)
+    dataapktmp=$(ls /data/app/ | grep $1)
+    dataapk="/data/app/${dataapktmp}/base.apk"
+    if [ $dataapk ]; then
+      origdir="$dataapk"
+    else
+      origdir="$sysapk"
     fi
-    if [ ! $(echo $origdir | grep "apk") ]; then
+    if [ -z $sysapk ] && [ -z $dataapktmp ]; then
       echo "\nCould not systemise launcher..."
       get_logs
-      [ "$SECHANGE" ] && setenforce $SESTATUS
       exit 1
     fi
     cp -rf $origdir \
@@ -261,26 +269,21 @@ $permissions
 
   [ -f $OVERLAYDIR/overlay/values/dimens.xml ] && rm $OVERLAYDIR/overlay/values/dimens.xml
 
-  cp -rf $MODDIR/unsigned.apk $STEPDIR/QuickstepSwitcherOverlay.apk
+  sign ${MODDIR}/unsigned.apk ${MODDIR}/signed.apk
+  cp -rf ${MODDIR}/signed.apk ${STEPDIR}/QuickstepSwitcherOverlay.apk
+  rm -rf ${MODDIR}/signed.apk ${MODDIR}/unsigned.apk
+
   [ "$QNAV" ] && cp -rf $MODDIR/qnav-unsigned.apk $MODDIR/system/app/QuickSwitchQNavOverlay.apk
 
-  if [ -f $STEPDIR/QuickstepSwitcherOverlay.apk ]; then
+  if [ -f ${STEPDIR}/QuickstepSwitcherOverlay.apk ]; then
     echo "\nOverlay successfully copied..."
   else
     echo "\nThe overlay was not copied, please send logs to the developer."
     get_logs
-    [ "$SECHANGE" ] && setenforce $SESTATUS
     exit 1
   fi
 
   set_perms $1
-}
-
-chselinux(){
-  SESTATUS=$(getenforce)
-  SECHANGE=
-  [ "$SESTATUS" = "Enforcing" ] && echo "Setting SELinux status to Permissive..."; SECHANGE=true
-  [ $SECHANGE ] && setenforce 0
 }
 
 print_modname() {
@@ -299,8 +302,6 @@ print_modname() {
 }
 
 print_modname
-
-chselinux
 
 resetprop ro.recents.grid false
 echo "ro.recents.grid=false" > $MODDIR/system.prop
@@ -325,8 +326,6 @@ for arg in $(echo ${@}); do
       continue;;
   esac
 done
-
-[ "$SECHANGE" ] && echo "\nSetting SELinux status to $SESTATUS..."; setenforce $SESTATUS
 
 unmount_rw_stepdir
 
