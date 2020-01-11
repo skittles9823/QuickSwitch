@@ -210,12 +210,13 @@ switch_providers(){
     mkdir -p $MODDIR/system/etc/sysconfig
     package=`echo $1 | cut -d- -f2-`
     sysapk=$(grep "updated-package name=\"$package\"" $xml | grep -o 'codePath=.*$' | cut -d\" -f2)
+    [ -z $sysapk ] && sysapk=$(grep "package name=\"$package\"" $xml | grep -o 'codePath=.*$' | cut -d\" -f2)
     dataapktmp=$(ls /data/app/ | grep $1)
     dataapk="/data/app/${dataapktmp}/base.apk"
     if [ $dataapk ]; then
       origdir="$dataapk"
     else
-      origdir="$sysapk"
+      origdir="${sysapk}/.*.apk"
     fi
     if [ -z $sysapk ] && [ -z $dataapktmp ]; then
       echo "\nCould not systemise launcher..."
@@ -228,7 +229,7 @@ switch_providers(){
     perms=$(aapt d permissions $origdir | grep "uses-permission:" | \
      sed -r "s|.*='(.*)'|\1|")
     permissions=$(echo "$perms" | \
-      sed -re "s|  ||g; s|^|        <permission name=\"|; s|$|\"/>|")
+     sed -re "s|  ||g; s|^|        <permission name=\"|; s|$|\"/>|")
 
     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 <permissions>
@@ -254,7 +255,7 @@ $permissions
 	<dimen name=\"config_backGestureInset\">0dp</dimen>
 </resources>" > $OVERLAYDIR/overlay/values/config.xml
   else
-    rm $OVERLAYDIR/overlay/values/config.xml
+    [ -f $OVERLAYDIR/overlay/values/config.xml ] && rm $OVERLAYDIR/overlay/values/config.xml
   fi
 
   aapt p -f -v -M ${OVERLAYDIR}/AndroidManifest.xml \
@@ -271,6 +272,7 @@ $permissions
 
   sign ${MODDIR}/unsigned.apk ${MODDIR}/signed.apk
   cp -rf ${MODDIR}/signed.apk ${STEPDIR}/QuickstepSwitcherOverlay.apk
+  [ ! -f ${MODDIR}/signed.apk ] && cp -rf ${MODDIR}/unsigned.apk ${STEPDIR}/QuickstepSwitcherOverlay.apk
   rm -rf ${MODDIR}/signed.apk ${MODDIR}/unsigned.apk
 
   [ "$QNAV" ] && cp -rf $MODDIR/qnav-unsigned.apk $MODDIR/system/app/QuickSwitchQNavOverlay.apk
