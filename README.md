@@ -3,7 +3,7 @@ QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep
 
 ## Donations:
 - If you wish to donate to [Paphonb](https://github.com/paphonb) for creating the QuickSwitch app you can do so [here](https://paypal.me/Paphonb).
-- Or if you wish to donate to [Skittles9823](https://github.com/skittles9823) for making the module, scripts, and handling support you can do so [here](https://paypal.me/Skittles2398).
+- Or if you wish to sponsor [Skittles9823](https://github.com/skittles9823) on GitHub for making the module, scripts, and handling support you can do so [here](https://github.com/sponsors/skittles9823).
 
 ## Disclaimer
 - A full list of compatible launchers will not be provided as the app autodetects which launchers are compatible.
@@ -36,6 +36,7 @@ QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep
 
 ## Thanks to
 - [Paphonb](https://github.com/paphonb), for being the main brains behind the module, creating the app, and much more.
+- [osm0sis](https://github.com/osm0sis) for assistance with getting 3.x.x to work without having to go permissive, and for his and [topjohnwu](https://github.com/topjohnwu)'s zipsigner
 - [The Lawnchair team](https://t.me/lawnchairci), for testing QuickSwitch.
 - [The Hyperion team](https://play.google.com/store/apps/details?id=projekt.launcher), for helping test QuickSwitch.
 
