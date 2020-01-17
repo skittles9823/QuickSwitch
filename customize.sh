@@ -28,8 +28,12 @@ if [ $MIUI ]; then
 fi
 ui_print "- Extracting module files"
 
-unzip -o "$ZIPFILE" 'overlays/*' 'system/*' 'common/*' 'module.prop' 'zipsigner*' 'uninstall.sh' 'quickswitch' 'QuickSwitch.apk' -d $MODPATH >&2
+unzip -o "$ZIPFILE" 'overlays/*' 'system/*' 'common/*' 'module.prop' 'zipsigner*' 'uninstall.sh' 'quickswitch' -d $MODPATH >&2
 chmod +x $MODPATH/common/*
+unzip -o "$ZIPFILE" 'QuickSwitch.apk' -d /data/local/tmp >&2
+ui_print "- installing QuickSwitch.apk"
+pm install -r "/data/local/tmp/QuickSwitch.apk"
+rm -rf /data/local/tmp/QuickSwitch.apk
 [ "$($MODPATH/common/aaptx86 v)" ] && AAPT=aaptx86
 [ "$($MODPATH/common/aapt v)" ] && AAPT=aapt
 [ "$($MODPATH/common/aapt64 v)" ] && AAPT=aapt64
@@ -46,7 +50,7 @@ MODVER=$(grep_prop versionCode $MODULEDIR/module.prop)
 if [  $MODVER -ge 300 ];then
   if [ -d $MODULEDIR ]; then
     ui_print "Module updating - retaining current provider"
-    for i in $(find $MODULEDIR/system/* -type d -maxdepth 0 | sed "/^app/ d"); do
+    for i in $(find $MODULEDIR/system/* -type d -maxdepth 0 | sed "/\/app$/ d"); do
         cp -rf "$i" $MODPATH/system/
     done
   fi
@@ -64,8 +68,6 @@ ui_print "!              OR THEY WILL NOT BE LOOKED AT             !"
 ui_print "!            ANY AND ALL ISSUES MUST HAVE LOGS           !"
 ui_print "!  Read the XDA thread to find out how to report issues  !"
 ui_print "!!!!!!!!!!!!!!!!!!!!!!!!!Important!!!!!!!!!!!!!!!!!!!!!!!!"
-
-pm install $MODPATH/QuickSwitch.apk
 
 set_perm_recursive $MODPATH 0 0 0755 0644
 set_perm $MODPATH/aapt 0 2000 0755
