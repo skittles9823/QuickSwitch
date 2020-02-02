@@ -83,7 +83,7 @@ set_perms(){
 }
 
 get_logs(){
-  overlaylog=$(cmd overlay dump | grep -A 10 "xyz.paphonb.quickstepswitcher.overlay:")
+  overlaylog=$(cmd overlay dump xyz.paphonb.quickstepswitcher.overlay)
   if [ "$overlaylog" ]; then
     echo "$overlaylog" > $MODDIR/logs/$ID-overlays.log
   else
@@ -306,7 +306,7 @@ print_modname() {
 print_modname
 
 resetprop ro.recents.grid false
-echo "ro.recents.grid=false" > $MODDIR/system.prop
+sed -i "/*ro.recents.grid*/d" $MODDIR/system.prop
 
 for arg in $(echo ${@}); do
   args=$(echo $arg | tr '=' ' ')
@@ -320,7 +320,7 @@ for arg in $(echo ${@}); do
       QNAV=true
       continue;;
     --grid) resetprop ro.recents.grid true
-      echo "ro.recents.grid=true" > $MODDIR/system.prop
+      echo "ro.recents.grid=true" >> $MODDIR/system.prop
       continue;;
     --noback) NOBACK=true
       continue;;

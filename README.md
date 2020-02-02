@@ -44,6 +44,10 @@ QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep
 You can get support for the module in either the [Telegram group](https://t.me/QuickstepSwitcherSupport) or the [XDA Thread](https://forum.xda-developers.com/apps/magisk/module-quickswitch-universal-quickstep-t3884797/).
 
 ## Changelog:
+### v3 0.8
+- prepare to fix issues with Omni/PE and other roms using prebuilt vendor on OnePlus devices
+- optimisations to the logging functionality
+
 ### v3.0.7
 - fix not being able to switch providers after initial flash of the module
 
