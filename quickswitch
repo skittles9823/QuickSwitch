@@ -213,7 +213,7 @@ switch_providers(){
     [ -z $sysapk ] && sysapk=$(grep "package name=\"$package\"" $xml | grep -o 'codePath=.*$' | cut -d\" -f2)
     dataapktmp=$(ls /data/app/ | grep $1)
     dataapk="/data/app/${dataapktmp}/base.apk"
-    if [ $dataapk ]; then
+    if [ $dataapktmp ]; then
       origdir="$dataapk"
     else
       origdir="${sysapk}/.*.apk"
