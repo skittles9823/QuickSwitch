@@ -47,6 +47,7 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 ### v3.0.9
 - force the overlay to /product/overlay on Android Q and above
 - preemptively check for Q or higher to support R when magisk adds support
+- make the uninstall code wayyyyy simpler
 - other various changes
 
 ### v3 0.8
