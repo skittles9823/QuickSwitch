@@ -50,6 +50,8 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 - make the uninstall code wayyyyy simpler
 - other various changes
 
+<details><summary>Older changes</summary>
+
 ### v3 0.8
 - prepare to fix issues with Omni/PE and other roms using prebuilt vendor on OnePlus devices
 - optimisations to the logging functionality
@@ -197,3 +199,4 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 
 ### v1.0.0
 - initial release
+</details>
