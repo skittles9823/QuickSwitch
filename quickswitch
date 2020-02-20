@@ -125,35 +125,25 @@ get_logs(){
 
 reset_provider(){
   setvars
-  rm -rf $MODDIR/system/etc
-  rm -rf $SYSTEMIZE_TARGET
-  rm -rf $STEPDIR/QuickstepSwitcherOverlay.apk
-  rm -rf $MODDIR/system/app/QuickSwitchQNavOverlay.apk
+  rm -rf $MODDIR/system
   rm -rf /data/resource-cache/overlays.list
   find /data/resource-cache/ -name *QuickstepSwitcherOverlay* -exec rm -rf {} \;
 }
 
 unmount_rw_stepdir(){
-  if [ "$MOUNTPRODUCT" ]; then
-    is_mounted_rw " /product" || unmount_rw /product
-  elif [ "$OEM" ];then
+  if [ "$OEM" ];then
     is_mounted_rw " /oem" && unmount_rw /oem
     is_mounted_rw " /oem/OP" && unmount_rw /oem/OP
   fi
 }
 
 setvars(){
-  if [ "$API" == 29 ]; then
+  MAGISK_VER_CODE=$(grep "MAGISK_VER_CODE=" /data/adb/magisk/util_functions.sh | awk -F = '{ print $2 }')
+  if [ "$API" -ge 29 ]; then
     SUFFIX="/overlay/QuickstepSwitcherOverlay"
-  else
-    SUFFIX="/overlay"
-  fi
-  if [ -d "/product/overlay" ]; then
     PRODUCT=true
     # Yay, magisk supports bind mounting /product now
-    MAGISK_VER_CODE=$(grep "MAGISK_VER_CODE=" /data/adb/magisk/util_functions.sh | awk -F = '{ print $2 }')
     if [ $MAGISK_VER_CODE -ge "20000" ]; then
-      MOUNTPRODUCT=
       STEPDIR=$MODDIR/system/product$SUFFIX
     else
       if [ $(resetprop ro.build.version.sdk) -ge 29 ]; then
@@ -161,26 +151,23 @@ setvars(){
         echo "Please update Magisk and try again."
         exit 1
       fi
-      MOUNTPRODUCT=true
-      STEPDIR=/product$SUFFIX
-      is_mounted " /product" || mount /product
-      is_mounted_rw " /product" || mount_rw /product
     fi
-  elif [ -d /oem/OP ];then
-    OEM=true
-    is_mounted " /oem" || mount /oem
-    is_mounted_rw " /oem" || mount_rw /oem
-    is_mounted " /oem/OP" || mount /oem/OP
-    is_mounted_rw " /oem/OP" || mount_rw /oem/OP
-    STEPDIR=/oem/OP/OPEN_US/overlay/framework
   else
-    PRODUCT=; OEM=; MOUNTPRODUCT=
-    STEPDIR=$MODDIR/system/vendor$SUFFIX
+    SUFFIX="/overlay"
+    if [ -d /oem/OP ]; then
+      OEM=true
+      is_mounted " /oem" || mount /oem
+      is_mounted_rw " /oem" || mount_rw /oem
+      is_mounted " /oem/OP" || mount /oem/OP
+      is_mounted_rw " /oem/OP" || mount_rw /oem/OP
+      STEPDIR=/oem/OP/OPEN_US/overlay/framework
+    else
+      PRODUCT=; OEM=
+      STEPDIR=$MODDIR/system/vendor$SUFFIX
+    fi
   fi
-  if [ "$MOUNTPRODUCT" ]; then
-    is_mounted " /product" || mount /product
-    is_mounted_rw " /product" || mount_rw /product
-  elif [ "$OEM" ];then
+
+  if [ "$OEM" ];then
     is_mounted " /oem" || mount /oem
     is_mounted_rw " /oem" || mount_rw /oem
     is_mounted " /oem/OP" || mount /oem/OP
@@ -208,7 +195,7 @@ switch_providers(){
     mkdir -p $SYSTEMIZE_TARGET/QuickSwitch-${1}-${RAND}
     mkdir -p $MODDIR/system/etc/permissions
     mkdir -p $MODDIR/system/etc/sysconfig
-    package=`echo $1 | cut -d- -f2-`
+    package=$(echo $1 | cut -d- -f2-)
     sysapk=$(grep "updated-package name=\"$package\"" $xml | grep -o 'codePath=.*$' | cut -d\" -f2)
     [ -z $sysapk ] && sysapk=$(grep "package name=\"$package\"" $xml | grep -o 'codePath=.*$' | cut -d\" -f2)
     dataapktmp=$(ls /data/app/ | grep $1)
@@ -268,14 +255,22 @@ $permissions
                 -F ${MODDIR}/qnav-unsigned.apk &>>$MODDIR/logs/aapt.log
   fi
 
-  [ -f $OVERLAYDIR/overlay/values/dimens.xml ] && rm $OVERLAYDIR/overlay/values/dimens.xml
+# currently, navbar height support hasn't been added to the app, so no need to check for this yet.
+#  [ -f $OVERLAYDIR/overlay/values/dimens.xml ] && rm $OVERLAYDIR/overlay/values/dimens.xml
 
   sign ${MODDIR}/unsigned.apk ${MODDIR}/signed.apk
   cp -rf ${MODDIR}/signed.apk ${STEPDIR}/QuickstepSwitcherOverlay.apk
   [ ! -f ${MODDIR}/signed.apk ] && cp -rf ${MODDIR}/unsigned.apk ${STEPDIR}/QuickstepSwitcherOverlay.apk
   rm -rf ${MODDIR}/signed.apk ${MODDIR}/unsigned.apk
 
-  [ "$QNAV" ] && cp -rf $MODDIR/qnav-unsigned.apk $MODDIR/system/app/QuickSwitchQNavOverlay.apk
+  if [ "$QNAV" ]; then
+    sign ${MODDIR}/qnav-unsigned.apk ${MODDIR}/qnav-signed.apk
+    cp -rf ${MODDIR}/qnav-signed.apk ${STEPDIR}/QuickSwitchQNavOverlay.apk
+    if [ ! -f ${MODDIR}/qnav-signed.apk ]; then
+      cp -rf ${MODDIR}/qnav-unsigned.apk ${STEPDIR}/QuickSwitchQNavOverlay.apk
+    fi
+    rm -rf ${MODDIR}/qnav-unsigned.apk ${MODDIR}/qnav-signed.apk
+  fi
 
   if [ -f ${STEPDIR}/QuickstepSwitcherOverlay.apk ]; then
     echo "\nOverlay successfully copied..."
