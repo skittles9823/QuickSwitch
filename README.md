@@ -44,13 +44,17 @@ QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep
 You can get support for the module in either the [Telegram group](https://t.me/QuickstepSwitcherSupport) or the [XDA Thread](https://forum.xda-developers.com/apps/magisk/module-quickswitch-universal-quickstep-t3884797/).
 
 ## Changelog:
+### v3.1.0
+- fix switching providers on Sansung OneUI 2.0
+- add sepolicy.rule so the logging can actually show if the overlay is active
+
+<details><summary>Older changes</summary>
+
 ### v3.0.9
 - force the overlay to /product/overlay on Android Q and above
 - preemptively check for Q or higher to support R when magisk adds support
 - make the uninstall code wayyyyy simpler
 - other various changes
-
-<details><summary>Older changes</summary>
 
 ### v3 0.8
 - prepare to fix issues with Omni/PE and other roms using prebuilt vendor on OnePlus devices
