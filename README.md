@@ -45,7 +45,7 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 
 ## Changelog:
 ### v3.1.0
-- fix switching providers on Sansung OneUI 2.0
+- fix switching providers on Samsung OneUI 2.0
 - add sepolicy.rule so the logging can actually show if the overlay is active
 
 <details><summary>Older changes</summary>
