@@ -25,7 +25,7 @@ QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep
 8. Profit.
 
 ## Debugging
-- The boot scripts will save logs to /sdcard/Documents/quickstepswitcher whenever it detects the user wants to switch providers
+- The script will save logs to /sdcard/Documents/quickstepswitcher whenever it detects the user wants to switch providers
 - All logs begin with **quickstepswitcher**
 - If you have any issues, please join the [Telegram group](https://t.me/QuickstepSwitcherSupport) and send the logs along with what your issue is.
 
