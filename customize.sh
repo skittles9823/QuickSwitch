@@ -12,7 +12,7 @@ ui_print "                   "
 ui_print " The Lawnchair Team"
 ui_print " "
 
-
+[ $BOOTMODE == "false" ] && abort "Installation failed!\nQuickSwitch must be installed via Magisk Manager!"
 if [ $API -lt "28" ]; then
   abort "QuickSwitch is for Android Pie+ only"
 fi
@@ -50,7 +50,7 @@ MODVER=$(grep_prop versionCode $MODULEDIR/module.prop)
 if [  $MODVER -ge 300 ];then
   if [ -d $MODULEDIR ]; then
     ui_print "Module updating - retaining current provider"
-    for i in $(find $MODULEDIR/system/* -type d -maxdepth 0 | sed "/\/app$/ d"); do
+    for i in $(find $MODULEDIR/system/* -type d -maxdepth 0); do
         cp -rf "$i" $MODPATH/system/
     done
   fi
