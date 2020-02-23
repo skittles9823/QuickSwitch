@@ -12,7 +12,7 @@ ui_print "                   "
 ui_print " The Lawnchair Team"
 ui_print " "
 
-[ $BOOTMODE == "false" ] && abort "Installation failed!\nQuickSwitch must be installed via Magisk Manager!"
+[ $BOOTMODE == "false" ] && abort "Installation failed! QuickSwitch must be installed via Magisk Manager!"
 if [ $API -lt "28" ]; then
   abort "QuickSwitch is for Android Pie+ only"
 fi

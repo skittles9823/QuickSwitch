@@ -264,11 +264,15 @@ $permissions
 
 # currently, navbar height support hasn't been added to the app, so no need to check for this yet.
 #  [ -f $OVERLAYDIR/overlay/values/dimens.xml ] && rm $OVERLAYDIR/overlay/values/dimens.xml
-
-  sign ${MODDIR}/unsigned.apk ${MODDIR}/signed.apk
-  cp -rf ${MODDIR}/signed.apk ${STEPDIR}/QuickstepSwitcherOverlay.apk
-  [ ! -f ${MODDIR}/signed.apk ] && cp -rf ${MODDIR}/unsigned.apk ${STEPDIR}/QuickstepSwitcherOverlay.apk
-  rm -rf ${MODDIR}/signed.apk ${MODDIR}/unsigned.apk
+  if [ -f ${MODDIR}/unsigned.apk ]; then
+    sign ${MODDIR}/unsigned.apk ${MODDIR}/signed.apk
+    cp -rf ${MODDIR}/signed.apk ${STEPDIR}/QuickstepSwitcherOverlay.apk
+    [ ! -f ${MODDIR}/signed.apk ] && cp -rf ${MODDIR}/unsigned.apk ${STEPDIR}/QuickstepSwitcherOverlay.apk
+    rm -rf ${MODDIR}/signed.apk ${MODDIR}/unsigned.apk
+  else
+    abort "Overlay not created!"
+    abortexit "This is generally a rom incompatibility,"
+    abortexit "currently I'm unsure how to fix this."
 
   if [ "$QNAV" ]; then
     sign ${MODDIR}/qnav-unsigned.apk ${MODDIR}/qnav-signed.apk
