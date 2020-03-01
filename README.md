@@ -47,6 +47,7 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 ### v3.1.2
 - twrp doesn't like \n so lets make the abort error display correctly
 - verify aapt successfully created the overlay, and abort otherwise
+- fix for Q custom roms on Samsung devices
 
 <details><summary>Older changes</summary>
 

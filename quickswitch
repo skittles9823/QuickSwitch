@@ -150,7 +150,11 @@ setvars(){
   if [ "$API" -ge 29 ]; then
     SUFFIX="/overlay/QuickstepSwitcherOverlay"
     case "$(getprop ro.product.brand) $(getprop ro.product.manufacturer)" in
-      *samsung*) STEPDIR=$MODDIR/system/vendor$SUFFIX;;
+      *samsung*) if [ ! -d /product/overlay ]; then
+                   STEPDIR=$MODDIR/system/vendor$SUFFIX
+                 else
+                   STEPDIR=$MODDIR/system/product$SUFFIX
+                 fi;;
       *) PRODUCT=true
           # Yay, magisk supports bind mounting /product now
           if [ $MAGISK_VER_CODE -ge "20000" ]; then
@@ -211,7 +215,7 @@ switch_providers(){
     if [ $dataapktmp ]; then
       origdir="$dataapk"
     else
-      origdir="${sysapk}/.*.apk"
+      origdir="${sysapk}/*.apk"
     fi
     if [ -z $sysapk ] && [ -z $dataapktmp ]; then
       get_logs
@@ -264,15 +268,17 @@ $permissions
 
 # currently, navbar height support hasn't been added to the app, so no need to check for this yet.
 #  [ -f $OVERLAYDIR/overlay/values/dimens.xml ] && rm $OVERLAYDIR/overlay/values/dimens.xml
-  if [ -f ${MODDIR}/unsigned.apk ]; then
+
+  if [ -s ${MODDIR}/unsigned.apk ]; then
     sign ${MODDIR}/unsigned.apk ${MODDIR}/signed.apk
     cp -rf ${MODDIR}/signed.apk ${STEPDIR}/QuickstepSwitcherOverlay.apk
-    [ ! -f ${MODDIR}/signed.apk ] && cp -rf ${MODDIR}/unsigned.apk ${STEPDIR}/QuickstepSwitcherOverlay.apk
+    [ ! -s ${MODDIR}/signed.apk ] && cp -rf ${MODDIR}/unsigned.apk ${STEPDIR}/QuickstepSwitcherOverlay.apk
     rm -rf ${MODDIR}/signed.apk ${MODDIR}/unsigned.apk
   else
     abort "Overlay not created!"
-    abortexit "This is generally a rom incompatibility,"
+    abort "This is generally a rom incompatibility,"
     abortexit "currently I'm unsure how to fix this."
+  fi
 
   if [ "$QNAV" ]; then
     sign ${MODDIR}/qnav-unsigned.apk ${MODDIR}/qnav-signed.apk
@@ -283,12 +289,14 @@ $permissions
     rm -rf ${MODDIR}/qnav-unsigned.apk ${MODDIR}/qnav-signed.apk
   fi
 
-  if [ -f ${STEPDIR}/QuickstepSwitcherOverlay.apk ]; then
+  if [ -s ${STEPDIR}/QuickstepSwitcherOverlay.apk ]; then
     echo "\nOverlay successfully copied..."
   else
     get_logs
     abortexit "The overlay was not copied, please send logs to the developer."
   fi
+
+  set_perms $1
 
 # Lets save this for a rainy day
 #  SDK=$(getprop ro.build.version.sdk)
@@ -303,7 +311,11 @@ $permissions
 #    cmd overlay enable com.samsung.internal.systemui.navbar.gestural_no_hint
 #  fi
 
-  set_perms $1
+# lets not add this just yet as it can cause crashes in certain circumstances
+#  if [ ! "$1" == "com.android.systemui" ]; then
+#    echo "pm set-home-activity $1" > $MODDIR/service.sh
+#    echo 'rm -rf $0' >> $MODDIR/service.sh
+#  fi
 }
 
 print_modname() {
