@@ -25,12 +25,9 @@ oldLOG=$MODDIR/logs/$ID-old.log
 # > Verbose output goes here
 VERLOG=$MODDIR/logs/$ID-verbose.log
 oldVERLOG=$MODDIR/logs/$ID-verbose-old.log
-stdoutLOG=$MODDIR/logs/$ID-STDOUT.log
-oldstdoutLOG=$MODDIR/logs/$ID-STDOUT-old.log
 
 # Start Logging verbosely
-mv -f $VERLOG $oldVERLOG 2>/dev/null; mv -f $LOG $oldLOG 2>/dev/null; mv -f $stdoutLOG $oldstdoutLOG 2>/dev/null
-exec 3>&1
+mv -f $VERLOG $oldVERLOG 2>/dev/null; mv -f $LOG $oldLOG 2>/dev/null
 exec 2>$LOG
 set -x 2>$VERLOG
 
@@ -51,10 +48,13 @@ NOBACK=
 
 abort() {
   echo "qsError: $1"
+  echo "$1" >&2
 }
 
 abortexit() {
   echo "qsError: $1"
+  echo "$1" >&2
+  get_logs
   exit 1
 }
 
@@ -218,7 +218,6 @@ switch_providers(){
       origdir="${sysapk}/*.apk"
     fi
     if [ -z $sysapk ] && [ -z $dataapktmp ]; then
-      get_logs
       abortexit "Could not systemise launcher..."
     fi
     cp -rf $origdir \
@@ -292,7 +291,6 @@ $permissions
   if [ -s ${STEPDIR}/QuickstepSwitcherOverlay.apk ]; then
     echo "\nOverlay successfully copied..."
   else
-    get_logs
     abortexit "The overlay was not copied, please send logs to the developer."
   fi
 
@@ -364,7 +362,5 @@ unmount_rw_stepdir
 get_logs
 
 echo "\nPlease reboot for changes to take effect."
-
-exec 1>&3
 
 exit $?

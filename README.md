@@ -44,12 +44,16 @@ QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep
 You can get support for the module in either the [Telegram group](https://t.me/QuickstepSwitcherSupport) or the [XDA Thread](https://forum.xda-developers.com/apps/magisk/module-quickswitch-universal-quickstep-t3884797/).
 
 ## Changelog:
+### v3.1.3
+- update QuickSwitch apk because i'm dumb and didn't update it to the latest version last time
+- small update and optimisations to the logging scripts
+
+<details><summary>Older changes</summary>
+
 ### v3.1.2
 - twrp doesn't like \n so lets make the abort error display correctly
 - verify aapt successfully created the overlay, and abort otherwise
 - fix for Q custom roms on Samsung devices
-
-<details><summary>Older changes</summary>
 
 ### v3.1.1
 - abort installation when installed through recovery (the app won't get installed in that case anyway so lets just avoid complaints)
