@@ -45,7 +45,7 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 
 ## Changelog:
 ### v3.1.4
-- add a launcher patcher to the app with support for the OnePlus launcher. Now you can grab the latest stock apk from apkmirror and use the patcher to port it on device.
+- add a launcher patcher to the app with support for the OnePlus launcher. Now you can grab the latest stock apk from apkmirror and use the patcher to port it on device. (This can take several minutes to complete)
 - add a dark mode toggle to the script (not implemented in the app yet)
 
 <details><summary>Older changes</summary>
