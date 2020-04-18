@@ -207,18 +207,22 @@ switch_providers(){
     mkdir -p $SYSTEMIZE_TARGET/QuickSwitch-${1}-${RAND}
     mkdir -p $MODDIR/system/etc/permissions
     mkdir -p $MODDIR/system/etc/sysconfig
-    package=$(echo $1 | cut -d- -f2-)
-    sysapk=$(grep "updated-package name=\"$package\"" $xml | grep -o 'codePath=.*$' | cut -d\" -f2)
-    [ -z $sysapk ] && sysapk=$(grep "package name=\"$package\"" $xml | grep -o 'codePath=.*$' | cut -d\" -f2)
-    dataapktmp=$(ls /data/app/ | grep $1)
-    dataapk="/data/app/${dataapktmp}/base.apk"
-    if [ $dataapktmp ]; then
-      origdir="$dataapk"
+    if [ -z $apkpath ]; then
+      package=$(echo $1 | cut -d- -f2-)
+      sysapk=$(grep "updated-package name=\"$package\"" $xml | grep -o 'codePath=.*$' | cut -d\" -f2)
+      [ -z $sysapk ] && sysapk=$(grep "package name=\"$package\"" $xml | grep -o 'codePath=.*$' | cut -d\" -f2)
+      dataapktmp=$(ls /data/app/ | grep $1)
+      dataapk="/data/app/${dataapktmp}/base.apk"
+      if [ $dataapktmp ]; then
+        origdir="$dataapk"
+      else
+        origdir="${sysapk}/*.apk"
+      fi
+      if [ -z $sysapk ] && [ -z $dataapktmp ]; then
+        abortexit "Could not systemise launcher..."
+      fi
     else
-      origdir="${sysapk}/*.apk"
-    fi
-    if [ -z $sysapk ] && [ -z $dataapktmp ]; then
-      abortexit "Could not systemise launcher..."
+      origdir="$patchedpath"
     fi
     cp -rf $origdir \
       $SYSTEMIZE_TARGET/QuickSwitch-"${1}"-"${RAND}"/QuickSwitch-"${1}"-"${RAND}".apk
@@ -334,7 +338,9 @@ print_modname() {
 print_modname
 
 resetprop ro.recents.grid false
+resetprop persist.sys.theme.status 0
 sed -i "/*ro.recents.grid*/d" $MODDIR/system.prop
+sed -i "/*persist.sys.theme.status*/d" $MODDIR/system.prop
 
 for arg in $(echo ${@}); do
   args=$(echo $arg | tr '=' ' ')
@@ -350,7 +356,13 @@ for arg in $(echo ${@}); do
     --grid) resetprop ro.recents.grid true
       echo "ro.recents.grid=true" >> $MODDIR/system.prop
       continue;;
+    --dark) resetprop persist.sys.theme.status 1
+      echo "persist.sys.theme.status 1" >> $MODDIR/system.prop
+      continue;;
     --noback) NOBACK=true
+      continue;;
+    --path) apkpath=true
+      patchedpath="$opt2"
       continue;;
     --ch) switch_providers "$opt2"
       continue;;
