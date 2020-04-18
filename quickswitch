@@ -223,7 +223,7 @@ switch_providers(){
       fi
     else
       origdir="$patchedpath"
-      dataapktmp=$(ls /data/app/ | grep $1)
+      dataapktmp=$(ls /data/app/ | grep ${1}-)
       rm -rf /data/app/${dataapktmp}/
     fi
     cp -rf $origdir \
