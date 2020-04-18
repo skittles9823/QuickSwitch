@@ -341,8 +341,8 @@ print_modname
 
 resetprop ro.recents.grid false
 resetprop persist.sys.theme.status 0
-sed -i "/*ro.recents.grid*/d" $MODDIR/system.prop
-sed -i "/*persist.sys.theme.status*/d" $MODDIR/system.prop
+sed -i "/ro.recents.grid*/d" $MODDIR/system.prop
+sed -i "/persist.sys.theme.status*/d" $MODDIR/system.prop
 
 for arg in $(echo ${@}); do
   args=$(echo $arg | tr '=' ' ')
@@ -359,7 +359,7 @@ for arg in $(echo ${@}); do
       echo "ro.recents.grid=true" >> $MODDIR/system.prop
       continue;;
     --dark) resetprop persist.sys.theme.status 1
-      echo "persist.sys.theme.status 1" >> $MODDIR/system.prop
+      echo "persist.sys.theme.status=1" >> $MODDIR/system.prop
       continue;;
     --noback) NOBACK=true
       continue;;
