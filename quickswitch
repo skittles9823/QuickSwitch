@@ -223,6 +223,8 @@ switch_providers(){
       fi
     else
       origdir="$patchedpath"
+      dataapktmp=$(ls /data/app/ | grep $1)
+      rm -rf /data/app/${dataapktmp}/
     fi
     cp -rf $origdir \
       $SYSTEMIZE_TARGET/QuickSwitch-"${1}"-"${RAND}"/QuickSwitch-"${1}"-"${RAND}".apk
