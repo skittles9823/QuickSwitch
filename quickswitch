@@ -220,8 +220,7 @@ switch_providers(){
       fi
     else
       origdir="$patchedpath"
-      dataapktmp=$(ls /data/app/ | grep ${1}-)
-      rm -rf /data/app/${dataapktmp}/
+      find /data/app -maxdepth 1 -name "${1}-*" -exec rm -rf {} \;
       if [ ! -z "$origpath" ]; then
         touch ${MODDIR}${origpath}/.replace
       fi
