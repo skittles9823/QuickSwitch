@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="xyz.paphonb.quickswitch.navbar">
-    <overlay android:priority="999" android:targetPackage="com.android.systemui.navbar" android:isStatic="true"/>
-    <application android:label="QuickSwitch Navigation Overlay" android:hasCode="false"/>
-</manifest>

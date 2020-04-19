@@ -39,12 +39,9 @@ PATH="/sbin/.magisk/busybox:/sbin/:$PATH"
 alias aapt='$MODDIR/aapt'
 alias sign='$MODDIR/zipsigner'
 xml=/data/system/packages.xml
-OVERLAYDIR=$MODDIR/overlays/quickswitchoverlay
-NAVOVERLAYDIR=$MODDIR/overlays/qnav
+OVERLAYDIR=$MODDIR/overlays
 RAND=$(echo $RANDOM | sed -r 's|^(...).*|\1|')
-QNAV=
 DID_MOUNT_RW=
-NOBACK=
 
 abort() {
   echo "qsError: $1"
@@ -225,6 +222,9 @@ switch_providers(){
       origdir="$patchedpath"
       dataapktmp=$(ls /data/app/ | grep ${1}-)
       rm -rf /data/app/${dataapktmp}/
+      if [ ! -z "$origpath" ]; then
+        touch ${MODDIR}${origpath}/.replace
+      fi
     fi
     cp -rf $origdir \
       $SYSTEMIZE_TARGET/QuickSwitch-"${1}"-"${RAND}"/QuickSwitch-"${1}"-"${RAND}".apk
@@ -252,27 +252,16 @@ $permissions
 	<string name=\"config_recentsComponentName\">$1/com.android.quickstep.RecentsActivity</string>
 </resources>" > $OVERLAYDIR/overlay/values/strings.xml
 
-  if [ $NOBACK ]; then
+if [ ! -z $sigpath ]; then
     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 <resources>
-	<dimen name=\"config_backGestureInset\">0dp</dimen>
-</resources>" > $OVERLAYDIR/overlay/values/config.xml
-  else
-    [ -f $OVERLAYDIR/overlay/values/config.xml ] && rm $OVERLAYDIR/overlay/values/config.xml
-  fi
+  $(cat $sigpath)
+</resources>" > $OVERLAYDIR/overlay/values/arrays.xml
+fi
 
   aapt p -f -v -M ${OVERLAYDIR}/AndroidManifest.xml \
                 -I /system/framework/framework-res.apk -S ${OVERLAYDIR}/overlay/ \
                 -F ${MODDIR}/unsigned.apk &>$MODDIR/logs/aapt.log
-
-  if [ "$QNAV" ]; then
-    aapt p -f -v -M ${NAVOVERLAYDIR}/AndroidManifest.xml \
-                -I /system/framework/framework-res.apk -S ${NAVOVERLAYDIR}/overlay/ \
-                -F ${MODDIR}/qnav-unsigned.apk &>>$MODDIR/logs/aapt.log
-  fi
-
-# currently, navbar height support hasn't been added to the app, so no need to check for this yet.
-#  [ -f $OVERLAYDIR/overlay/values/dimens.xml ] && rm $OVERLAYDIR/overlay/values/dimens.xml
 
   if [ -s ${MODDIR}/unsigned.apk ]; then
     sign ${MODDIR}/unsigned.apk ${MODDIR}/signed.apk
@@ -283,15 +272,6 @@ $permissions
     abort "Overlay not created!"
     abort "This is generally a rom incompatibility,"
     abortexit "currently I'm unsure how to fix this."
-  fi
-
-  if [ "$QNAV" ]; then
-    sign ${MODDIR}/qnav-unsigned.apk ${MODDIR}/qnav-signed.apk
-    cp -rf ${MODDIR}/qnav-signed.apk ${STEPDIR}/QuickSwitchQNavOverlay.apk
-    if [ ! -f ${MODDIR}/qnav-signed.apk ]; then
-      cp -rf ${MODDIR}/qnav-unsigned.apk ${STEPDIR}/QuickSwitchQNavOverlay.apk
-    fi
-    rm -rf ${MODDIR}/qnav-unsigned.apk ${MODDIR}/qnav-signed.apk
   fi
 
   if [ -s ${STEPDIR}/QuickstepSwitcherOverlay.apk ]; then
@@ -340,9 +320,7 @@ print_modname() {
 print_modname
 
 resetprop ro.recents.grid false
-resetprop persist.sys.theme.status 0
 sed -i "/ro.recents.grid*/d" $MODDIR/system.prop
-sed -i "/persist.sys.theme.status*/d" $MODDIR/system.prop
 
 for arg in $(echo ${@}); do
   args=$(echo $arg | tr '=' ' ')
@@ -352,19 +330,15 @@ for arg in $(echo ${@}); do
     --reset) reset_provider
       echo "The recents provider has been reset to default."
       continue;;
-    --qnav) echo "Installing Android 10 navigation bar overlay..."
-      QNAV=true
-      continue;;
     --grid) resetprop ro.recents.grid true
       echo "ro.recents.grid=true" >> $MODDIR/system.prop
       continue;;
-    --dark) resetprop persist.sys.theme.status 1
-      echo "persist.sys.theme.status=1" >> $MODDIR/system.prop
-      continue;;
-    --noback) NOBACK=true
-      continue;;
     --path) apkpath=true
       patchedpath="$opt2"
+      continue;;
+    --origpath) origpath="$opt2"
+      continue;;
+    --sigpath) sigpath="$opt2"
       continue;;
     --ch) switch_providers "$opt2"
       continue;;
