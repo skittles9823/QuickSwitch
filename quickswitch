@@ -253,10 +253,7 @@ $permissions
 </resources>" > $OVERLAYDIR/overlay/values/strings.xml
 
 if [ ! -z $sigpath ]; then
-    echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
-<resources>
-  $(cat $sigpath)
-</resources>" > $OVERLAYDIR/overlay/values/arrays.xml
+  cat $sigpath > $OVERLAYDIR/overlay/values/arrays.xml
 fi
 
   aapt p -f -v -M ${OVERLAYDIR}/AndroidManifest.xml \
