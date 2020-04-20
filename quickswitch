@@ -208,6 +208,7 @@ switch_providers(){
       rm -rf $DATAAPKPATH
     fi
     if [ ! -z "$REPLACEPATH" ]; then
+      mkdir -p ${MODDIR}${REPLACEPATH}/
       touch ${MODDIR}${REPLACEPATH}/.replace
     fi
     cp -rf $APKPATH \
