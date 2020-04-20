@@ -46,6 +46,10 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 ## Changelog:
 ### v3.1.6
 - fix severe issue which causes /data/app/ to be deleted
+- the app now has a button to share an archive of the log files for debugging
+- fix dark mode in OnePlus launcher
+- fix the overlay not getting compiled in some situations
+- the apl now sends the script variables in a better way to make thw code much cleaner and easier to manage
 
 ### v3.1.5
 - more OnePlus launcher patching fixes

@@ -38,7 +38,6 @@ API=$(getprop ro.build.version.sdk)
 PATH="/sbin/.magisk/busybox:/sbin/:$PATH"
 alias aapt='$MODDIR/aapt'
 alias sign='$MODDIR/zipsigner'
-xml=/data/system/packages.xml
 OVERLAYDIR=$MODDIR/overlays
 RAND=$(echo $RANDOM | sed -r 's|^(...).*|\1|')
 DID_MOUNT_RW=
@@ -204,28 +203,14 @@ switch_providers(){
     mkdir -p $SYSTEMIZE_TARGET/QuickSwitch-${1}-${RAND}
     mkdir -p $MODDIR/system/etc/permissions
     mkdir -p $MODDIR/system/etc/sysconfig
-    if [ -z $apkpath ]; then
-      package=$(echo $1 | cut -d- -f2-)
-      sysapk=$(grep "updated-package name=\"$package\"" $xml | grep -o 'codePath=.*$' | cut -d\" -f2)
-      [ -z $sysapk ] && sysapk=$(grep "package name=\"$package\"" $xml | grep -o 'codePath=.*$' | cut -d\" -f2)
-      dataapktmp=$(ls /data/app/ | grep $1)
-      dataapk="/data/app/${dataapktmp}/base.apk"
-      if [ $dataapktmp ]; then
-        origdir="$dataapk"
-      else
-        origdir="${sysapk}/*.apk"
-      fi
-      if [ -z $sysapk ] && [ -z $dataapktmp ]; then
-        abortexit "Could not systemise launcher..."
-      fi
-    else
-      origdir="$patchedpath"
-      find /data/app -maxdepth 1 -name "${1}-*" -exec rm -rf {} \;
-      if [ ! -z "$origpath" ]; then
-        touch ${MODDIR}${origpath}/.replace
-      fi
+    if [ ! -z "$DATAAPKPATH" ]; then
+      # if this yeets /data/app this time then its @paphonb's fault xdd
+      rm -rf $DATAAPKPATH
     fi
-    cp -rf $origdir \
+    if [ ! -z "$REPLACEPATH" ]; then
+      touch ${MODDIR}${REPLACEPATH}/.replace
+    fi
+    cp -rf $APKPATH \
       $SYSTEMIZE_TARGET/QuickSwitch-"${1}"-"${RAND}"/QuickSwitch-"${1}"-"${RAND}".apk
 
     perms=$(aapt d permissions $origdir | grep "uses-permission:" | \
@@ -251,8 +236,8 @@ $permissions
 	<string name=\"config_recentsComponentName\">$1/com.android.quickstep.RecentsActivity</string>
 </resources>" > $OVERLAYDIR/overlay/values/strings.xml
 
-if [ ! -z $sigpath ]; then
-  cat $sigpath > $OVERLAYDIR/overlay/values/arrays.xml
+if [ ! -z "$PLATFORMSIGNATURES" ]; then
+  cat "$PLATFORMSIGNATURES" > $OVERLAYDIR/overlay/values/arrays.xml
 fi
 
   aapt p -f -v -M ${OVERLAYDIR}/AndroidManifest.xml \
@@ -329,13 +314,6 @@ for arg in $(echo ${@}); do
     --grid) resetprop ro.recents.grid true
       echo "ro.recents.grid=true" >> $MODDIR/system.prop
       continue;;
-    --path) apkpath=true
-      patchedpath="$opt2"
-      continue;;
-    --origpath) origpath="$opt2"
-      continue;;
-    --sigpath) sigpath="$opt2"
-      continue;;
     --ch) switch_providers "$opt2"
       continue;;
   esac
@@ -348,3 +326,4 @@ get_logs
 echo "\nPlease reboot for changes to take effect."
 
 exit $?
+ 
