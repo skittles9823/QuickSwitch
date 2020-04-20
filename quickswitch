@@ -213,7 +213,7 @@ switch_providers(){
     cp -rf $APKPATH \
       $SYSTEMIZE_TARGET/QuickSwitch-"${1}"-"${RAND}"/QuickSwitch-"${1}"-"${RAND}".apk
 
-    perms=$(aapt d permissions $origdir | grep "uses-permission:" | \
+    perms=$(aapt d permissions $APKPATH | grep "uses-permission:" | \
      sed -r "s|.*='(.*)'|\1|")
     permissions=$(echo "$perms" | \
      sed -re "s|  ||g; s|^|        <permission name=\"|; s|$|\"/>|")
@@ -236,8 +236,8 @@ $permissions
 	<string name=\"config_recentsComponentName\">$1/com.android.quickstep.RecentsActivity</string>
 </resources>" > $OVERLAYDIR/overlay/values/strings.xml
 
-if [ ! -z "$PLATFORMSIGNATURES" ]; then
-  cat "$PLATFORMSIGNATURES" > $OVERLAYDIR/overlay/values/arrays.xml
+if [ ! -z "$PLATFORMSIGNATURE" ]; then
+  cat "$PLATFORMSIGNATURE" > $OVERLAYDIR/overlay/values/arrays.xml
 fi
 
   aapt p -f -v -M ${OVERLAYDIR}/AndroidManifest.xml \
