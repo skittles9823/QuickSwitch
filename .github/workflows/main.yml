@@ -1,0 +1,20 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+
+    - name: Rebuild apk
+      if: endsWith(github.ref, '/master')
+      env:
+        DRONE_SERVER: ${{ secrets.DRONE_SERVER }}
+        DRONE_TOKEN: ${{ secrets.DRONE_TOKEN }}
+        DRONE_REPO: ${{ secrets.DRONE_REPO }}
+      run: |
+        bash ./restartbuild.sh
