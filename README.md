@@ -55,12 +55,12 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 
 <details><summary>Older changes</summary>
 
-### v3.1.5
+### v3.1.5 - Deleted
 - more OnePlus launcher patching fixes
 - add support for some custom roms to have dt2s and notification support in the patched OnePlus launcher
 - clean up old unused code
 
-### v3.1.4
+### v3.1.4 - Deleted
 - add a launcher patcher to the app with support for the OnePlus launcher. Now you can grab the latest stock apk from apkmirror and use the patcher to port it on device. (This can take several minutes to complete)
 - add a dark mode toggle to the script (not implemented in the app yet)
 
