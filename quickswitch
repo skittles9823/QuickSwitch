@@ -136,7 +136,9 @@ reset_provider(){
 
 uninstall_overlay(){
   setvars
-  rm -rf $STEPDIR/QuickstepSwitcherOverlay.apk
+  if [ $OEM == "true" ]; then
+    rm -rf $STEPDIR/QuickstepSwitcherOverlay.apk
+  fi
   rm -rf /data/resource-cache/overlays.list
   find /data/resource-cache/ -name *QuickstepSwitcherOverlay* -exec rm -rf {} \;
 }
