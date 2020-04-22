@@ -51,7 +51,6 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 - fix the overlay not getting compiled in some situations
 - the app now sends the script variables in a better way to make the code much cleaner and easier to manage
 - completely fix the drawer text colour, corner radious, and recents long press buttons in oneplus launcher 
-- uninstall the app when uninstalling the module through magisk manager
 
 <details><summary>Older changes</summary>
 
