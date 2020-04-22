@@ -31,7 +31,7 @@ ui_print "- Extracting module files"
 unzip -o "$ZIPFILE" 'overlays/*' 'system/*' 'common/*' 'module.prop' 'system.prop' 'sepolicy.rule' 'zipsigner*' 'uninstall.sh' 'quickswitch' -d $MODPATH >&2
 chmod +x $MODPATH/common/*
 
-if [ ! -z "$NOAPK" ]; then
+if [ -z "$NOAPK" ]; then
   unzip -o "$ZIPFILE" 'QuickSwitch.apk' -d /data/local/tmp >&2
   ui_print "- installing QuickSwitch.apk"
   pm install -r "/data/local/tmp/QuickSwitch.apk"
