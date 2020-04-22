@@ -134,6 +134,13 @@ reset_provider(){
   find /data/resource-cache/ -name *QuickstepSwitcherOverlay* -exec rm -rf {} \;
 }
 
+uninstall_overlay(){
+  setvars
+  rm -rf $STEPDIR/QuickstepSwitcherOverlay.apk
+  rm -rf /data/resource-cache/overlays.list
+  find /data/resource-cache/ -name *QuickstepSwitcherOverlay* -exec rm -rf {} \;
+}
+
 unmount_rw_stepdir(){
   if [ "$OEM" ];then
     is_mounted_rw " /oem" && unmount_rw /oem
@@ -311,6 +318,8 @@ for arg in $(echo ${@}); do
   case "$opt1" in
     --reset) reset_provider
       echo "The recents provider has been reset to default."
+      continue;;
+    --uninstall) uninstall_overlay
       continue;;
     --grid) resetprop ro.recents.grid true
       echo "ro.recents.grid=true" >> $MODDIR/system.prop
