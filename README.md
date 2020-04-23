@@ -45,7 +45,7 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 
 ## Changelog:
 ### v3.1.6 - hotfix
-- fix uninstalling the module through magisk mamager cause /sdcard to fail to mount on next boot
+- fix uninstalling the module through magisk manager causing /sdcard to fail to mount on next boot
 - revert the commit which was supposed to uninstall the app when uninstalling the module as it did not work
 
 ### v3.1.6
