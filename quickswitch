@@ -87,7 +87,7 @@ set_perms(){
 }
 
 get_logs(){
-  overlaylog=$(cmd overlay dump xyz.paphonb.quickstepswitcher.overlay)
+  overlaylog=$(cmd overlay dump xyz.paphonb.quickswitch.overlay)
   if [ "$overlaylog" ]; then
     echo "$overlaylog" > $MODDIR/logs/$ID-overlays.log
   else
@@ -130,7 +130,7 @@ get_logs(){
 setvars(){
   MAGISK_VER_CODE=$(grep "MAGISK_VER_CODE=" /data/adb/magisk/util_functions.sh | awk -F = '{ print $2 }')
   if [ "$API" -ge 29 ]; then
-    SUFFIX="/overlay/QuickstepSwitcherOverlay"
+    SUFFIX="/overlay/QuickSwitchOverlay"
     case "$(getprop ro.product.brand) $(getprop ro.product.manufacturer)" in
       *samsung*) if [ ! -d /product/overlay ]; then
                    STEPDIR=$MODDIR/system/vendor$SUFFIX
@@ -179,15 +179,17 @@ reset_provider(){
   rm -rf $MODDIR/system
   rm -rf /data/resource-cache/overlays.list
   find /data/resource-cache/ -name *QuickstepSwitcherOverlay* -exec rm -rf {} \;
+  find /data/resource-cache/ -name *QuickSwitchOverlay* -exec rm -rf {} \;
 }
 
 uninstall_overlay(){
   setvars
   if [ "$OEM" ]; then
-    rm -rf $STEPDIR/QuickstepSwitcherOverlay.apk
+    rm -rf $STEPDIR/QuickSwitchOverlay.apk
   fi
   rm -rf /data/resource-cache/overlays.list
   find /data/resource-cache/ -name *QuickstepSwitcherOverlay* -exec rm -rf {} \;
+  find /data/resource-cache/ -name *QuickSwitchOverlay* -exec rm -rf {} \;
 }
 
 unmount_rw_stepdir(){
@@ -256,8 +258,8 @@ fi
 
   if [ -s ${MODDIR}/unsigned.apk ]; then
     sign ${MODDIR}/unsigned.apk ${MODDIR}/signed.apk
-    cp -rf ${MODDIR}/signed.apk ${STEPDIR}/QuickstepSwitcherOverlay.apk
-    [ ! -s ${MODDIR}/signed.apk ] && cp -rf ${MODDIR}/unsigned.apk ${STEPDIR}/QuickstepSwitcherOverlay.apk
+    cp -rf ${MODDIR}/signed.apk ${STEPDIR}/QuickSwitchOverlay.apk
+    [ ! -s ${MODDIR}/signed.apk ] && cp -rf ${MODDIR}/unsigned.apk ${STEPDIR}/QuickSwitchOverlay.apk
     rm -rf ${MODDIR}/signed.apk ${MODDIR}/unsigned.apk
   else
     abort "Overlay not created!"
@@ -265,7 +267,7 @@ fi
     abortexit "currently I'm unsure how to fix this."
   fi
 
-  if [ -s ${STEPDIR}/QuickstepSwitcherOverlay.apk ]; then
+  if [ -s ${STEPDIR}/QuickSwitchOverlay.apk ]; then
     echo "\nOverlay successfully copied..."
   else
     abortexit "The overlay was not copied, please send logs to the developer."

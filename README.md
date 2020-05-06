@@ -44,6 +44,13 @@ QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep
 You can get support for the module in either the [Telegram group](https://t.me/QuickstepSwitcherSupport) or the [XDA Thread](https://forum.xda-developers.com/apps/magisk/module-quickswitch-universal-quickstep-t3884797/).
 
 ## Changelog:
+### v3.1.6-3
+- change package/directory names of the overlay
+- add flags to the overlays manifest that should have been there for a while
+- hopefully these changes help with the magisk hide lag
+
+<details><summary>Older changes</summary>
+
 ### v3.1.6-2
 - fix crash while grabbing logs from the app
 - add patch version to the patched apk and prompt the user when the launcher needs to be patched again
@@ -60,8 +67,6 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 - fix the overlay not getting compiled in some situations
 - the app now sends the script variables in a better way to make the code much cleaner and easier to manage
 - completely fix the drawer text colour, corner radious, and recents long press buttons in oneplus launcher 
-
-<details><summary>Older changes</summary>
 
 ### v3.1.5 - Deleted
 - more OnePlus launcher patching fixes
