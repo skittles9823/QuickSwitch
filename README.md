@@ -48,6 +48,8 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 - change package/directory names of the overlay
 - add flags to the overlays manifest that should have been there for a while
 - hopefully these changes help with the magisk hide lag
+- on uninstall, also reset the provider
+- support patching OP Launcher 4.5.4 for swipe down shelf
 
 <details><summary>Older changes</summary>
 
