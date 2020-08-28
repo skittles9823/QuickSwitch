@@ -1,6 +1,8 @@
 # QuickSwitch - Quickstep enabler for any supported launcher
 QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep) in any supported launcher
 
+![GitHub All Releases](https://img.shields.io/github/downloads/skittles9823/quickswitch/total?label=Downloads%20on%20GitHub)
+
 ## Donations:
 - If you wish to donate to [Paphonb](https://github.com/paphonb) for creating the QuickSwitch app you can do so [here](https://paypal.me/Paphonb).
 - Or if you wish to sponsor [Skittles9823](https://github.com/skittles9823) on GitHub for making the module, scripts, and handling support you can do so [here](https://github.com/sponsors/skittles9823).
