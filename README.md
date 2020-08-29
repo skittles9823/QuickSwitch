@@ -44,10 +44,13 @@ QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep
 You can get support for the module in either the [Telegram group](https://t.me/QuickstepSwitcherSupport) or the [XDA Thread](https://forum.xda-developers.com/apps/magisk/module-quickswitch-universal-quickstep-t3884797/).
 
 ## Changelog:
-### v3.1.6-4
-- update QuickSwitch app to fix OOS issue where patching OnePlus Launcher duplicated the launcher after an app update
+### v3.1.6-5
+- save logs from the launcher patching process
 
 <details><summary>Older changes</summary>
+
+### v3.1.6-4
+- update QuickSwitch app to fix OOS issue where patching OnePlus Launcher duplicated the launcher after an app update
 
 ### v3.1.6-3
 - change package/directory names of the overlay

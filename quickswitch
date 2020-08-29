@@ -121,6 +121,7 @@ get_logs(){
   echo -e "\n---Module Version---" >> $MODDIR/logs/$ID-vars.log
   echo `grep "versionCode=" $MODDIR/module.prop` >> $MODDIR/logs/$ID-vars.log
   find $MODDIR > $MODDIR/logs/find.log
+
   rm -rf /storage/emulated/0/Documents/$ID/*
   mkdir -p /storage/emulated/0/Documents/$ID
   cp -rf $MODDIR/logs/* /storage/emulated/0/Documents/$ID/
@@ -241,6 +242,14 @@ $permissions
 <config>
     <hidden-api-whitelisted-app package=\"${1}\"/>
 </config>" > $WHITELISTXMLDIR/$1-hiddenapi-package-whitelist.xml
+
+    # Get logs for the patching process if the selected launcher is OnePlus Launcher
+    # If more launchers get patch functionality I'll make the package name a variable array which can easily be added to. 
+    if [ "$1" == "net.oneplus.launcher" ]; then
+      echo $(logcat -d | grep "I Patcher") > $MODDIR/logs/$ID-Patcher.log
+    else
+      rm $MODDIR/logs/$ID-Patcher.log
+    fi
   fi
 
   echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
