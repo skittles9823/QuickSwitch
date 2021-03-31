@@ -343,6 +343,10 @@ for arg in $(echo ${@}); do
   esac
 done
 
+# If the script is called, then there is no reason for the magisk module to be disabled.
+# Let's make sure the module is enabled.
+rm -rf $MODDIR/disable
+
 unmount_rw_stepdir
 
 get_logs
