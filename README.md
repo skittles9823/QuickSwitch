@@ -56,13 +56,17 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 
 ## Changelog:
 
+### v3.1.8
+- mark launcher as compatible if version name is same as system
+- fix OnePlus display issues
+
+<details><summary>Older changes</summary>
+
 ### v3.1.7.1
 
 - make sure module is enabled if the script is called
 - show android version code (11) instead of android sdk (30) for incompatible launchers in the QuickSwitch app
 - fix module on OOS 11 (Thanks to Mark455)
-
-<details><summary>Older changes</summary>
 
 ### v3.1.7
 
