@@ -13,7 +13,6 @@ QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep
 
 - A full list of compatible launchers will not be provided as the app autodetects which launchers are compatible.
 - Nova will likely never support QuickSwitch unless they decide to add support for the Razer Phone naitivly.
-- MIUI does not have the necessary APIs to set third party launchers as the recents providers and as such is not supported.
 
 ## Requirements:
 
@@ -22,14 +21,13 @@ QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep
 
 ## Installation
 
-1. Flash this module.
-2. Reboot.
-3. Open the QuickSwitch app that was installed.
-4. Select a different launcher as your recents provider.
-5. Reboot.
-6. Verify your new recents provider is correct.
-7. Set the new recents provider as the default launcher.
-8. Profit.
+1. Install the QuickSwitch apk from the telegram channel or GitHub releases.
+2. Open the QuickSwitch app that was installed.
+3. Select a different launcher as your recents provider.
+4. Reboot.
+5. Verify your new recents provider is correct.
+6. Set the new recents provider as the default launcher.
+7. Profit.
 
 ## Debugging
 
