@@ -129,12 +129,12 @@ get_logs(){
 }
 
 setvars(){
+  SUFFIX="/overlay/QuickSwitchOverlay"
   if [ "$API" -ge 31 ]; then
     if [ -d /system_ext/oplus ]; then
       STEPDIR=$MODDIR/system/vendor$SUFFIX
     fi
   elif [ "$API" -ge 29 ]; then
-    SUFFIX="/overlay/QuickSwitchOverlay"
     case "$(getprop ro.product.brand) $(getprop ro.product.manufacturer)" in
       *samsung*) if [ ! -d /product/overlay ]; then
                    STEPDIR=$MODDIR/system/vendor$SUFFIX
