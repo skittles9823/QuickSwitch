@@ -56,6 +56,9 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 
 ## Changelog:
 
+### v3.1.9.1
+- move overlay to /vendor on OOS12+ (bruh moment)
+
 ### v3.1.8
 - mark launcher as compatible if version name is same as system
 - fix OnePlus display issues
