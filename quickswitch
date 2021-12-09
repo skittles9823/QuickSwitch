@@ -162,6 +162,12 @@ setvars(){
     fi
   fi
 
+  if [ -d /system_ext/oplus ]; then
+    if [ "$API" -ge 31 ]; then
+      STEPDIR=$MODDIR/system/vendor$SUFFIX
+    fi
+  fi
+
   if [ "$OEM" ];then
     is_mounted " /oem" || mount /oem
     is_mounted_rw " /oem" || mount_rw /oem
