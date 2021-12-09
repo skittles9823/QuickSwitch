@@ -130,16 +130,18 @@ get_logs(){
 
 setvars(){
   SUFFIX="/overlay/QuickSwitchOverlay"
-  if [ "$API" -ge 31 ]; then
-    if [ -d /system_ext/oplus ]; then
-      STEPDIR=$MODDIR/system/vendor$SUFFIX
-    fi
-  elif [ "$API" -ge 29 ]; then
+  if [ "$API" -ge 29 ]; then
+    STEPDIR=$MODDIR/system/product$SUFFIX
     case "$(getprop ro.product.brand) $(getprop ro.product.manufacturer)" in
       *samsung*) if [ ! -d /product/overlay ]; then
                    STEPDIR=$MODDIR/system/vendor$SUFFIX
-                 else
-                   STEPDIR=$MODDIR/system/product$SUFFIX
+                 fi;;
+      *OnePlus*) if [ "$API" -ge 31 ]; then
+                   if [ -d /system_ext/oplus ]; then
+                     STEPDIR=$MODDIR/system/vendor$SUFFIX
+                   else
+                     STEPDIR=$MODDIR/system/product$SUFFIX
+                   fi
                  fi;;
       *) PRODUCT=true
           # Yay, magisk supports bind mounting /product now
