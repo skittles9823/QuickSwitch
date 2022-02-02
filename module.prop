@@ -1,6 +1,7 @@
 id=quickstepswitcher
 name=QuickSwitch (Android Pie+)
-version=v3.2.0
-versionCode=3200
+version=v3.2.1
+versionCode=3210
 author=The Lawnchair team
 description=Pie recents for any supported launcher
+updateJson=https://raw.githubusercontent.com/skittles9823/QuickSwitch/master/QuickSwitch.json

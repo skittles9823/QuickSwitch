@@ -4,54 +4,6 @@ QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep
 
 ![GitHub All Releases](https://img.shields.io/github/downloads/skittles9823/quickswitch/total?label=Downloads%20on%20GitHub)
 
-## Donations:
-
-- If you wish to donate to [Paphonb](https://github.com/paphonb) for creating the QuickSwitch app you can do so [here](https://paypal.me/Paphonb).
-- Or if you wish to sponsor [Skittles9823](https://github.com/skittles9823) on GitHub for making the module, scripts, and handling support you can do so [here](https://github.com/sponsors/skittles9823).
-
-## Disclaimer
-
-- A full list of compatible launchers will not be provided as the app autodetects which launchers are compatible.
-- Nova will likely never support QuickSwitch unless they decide to add support for the Razer Phone natively.
-
-## Requirements:
-
-- Magisk 18+ (Android 10 needs Magisk v20 or higher)
-- Android 9+
-
-## Installation
-
-1. Install the QuickSwitch apk from the telegram channel or GitHub releases.
-2. Open the QuickSwitch app that was installed.
-3. Select a different launcher as your recents provider.
-4. Reboot.
-5. Verify your new recents provider is correct.
-6. Set the new recents provider as the default launcher.
-7. Profit.
-
-## Debugging
-
-- The script will save logs to /sdcard/Documents/quickstepswitcher whenever it detects the user wants to switch providers
-- All logs begin with **quickstepswitcher**
-- If you have any issues, please join the [Telegram group](https://t.me/QuickstepSwitcherSupport) and send the logs along with what your issue is.
-
-## Sources and used/needed tools:
-
-- [Module Source](https://github.com/skittles9823/QuickSwitch)
-- [Magisk](https://github.com/topjohnwu/Magisk) by [topjohnwu](https://forum.xda-developers.com/member.php?u=4470081)
-- [Magisk Module Template](https://github.com/topjohnwu/magisk-module-template) by [topjohnwu](https://forum.xda-developers.com/member.php?u=4470081)
-
-## Thanks to
-
-- [Paphonb](https://github.com/paphonb), for being the main brains behind the module, creating the app, and much more.
-- [osm0sis](https://github.com/osm0sis) for assistance with getting 3.x.x to work without having to go permissive, and for his and [topjohnwu](https://github.com/topjohnwu)'s zipsigner
-- [The Lawnchair team](https://t.me/lawnchairci), for testing QuickSwitch.
-- [The Hyperion team](https://play.google.com/store/apps/details?id=projekt.launcher), for helping test QuickSwitch.
-
-## Support
-
-You can get support for the module in either the [Telegram group](https://t.me/QuickstepSwitcherSupport) or the [XDA Thread](https://forum.xda-developers.com/apps/magisk/module-quickswitch-universal-quickstep-t3884797/).
-
 ## Changelog:
 
 ### v3.2.1
