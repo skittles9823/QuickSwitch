@@ -21,7 +21,7 @@ QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep
 
 ## Installation
 
-1. Install the QuickSwitch apk from the telegram channel or GitHub releases.
+1. Install the QuickSwitch apk from the [Telegram channel](https://t.me/QuickstepSwitcherReleases) or [GitHub releases](https://github.com/skittles9823/QuickSwitch/releases).
 2. Open the QuickSwitch app that was installed.
 3. Select a different launcher as your recents provider.
 4. Reboot.
