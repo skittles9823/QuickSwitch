@@ -4,7 +4,7 @@
 # Slimmed down for use as an app backend by @Skittles9823
 
 # Magisk Module ID
-ID="quickstepswitcher"
+ID="quickswitch"
 
 # Magisk Mod Directory
 if [ -d /data/adb/modules_update/$ID ]; then
@@ -27,7 +27,8 @@ VERLOG=$MODDIR/logs/$ID-verbose.log
 oldVERLOG=$MODDIR/logs/$ID-verbose-old.log
 
 # Start Logging verbosely
-mv -f $VERLOG $oldVERLOG 2>/dev/null; mv -f $LOG $oldLOG 2>/dev/null
+mv -f $VERLOG $oldVERLOG 2>/dev/null
+mv -f $LOG $oldLOG 2>/dev/null
 exec 2>$LOG
 set -x 2>$VERLOG
 
@@ -41,6 +42,11 @@ alias sign='$MODDIR/zipsigner'
 OVERLAYDIR=$MODDIR/overlays
 RAND=$(echo $RANDOM | sed -r 's|^(...).*|\1|')
 DID_MOUNT_RW=
+defaultlauncherPackage=$(aapt d strings /system/framework/framework-res.apk | grep -m 1 "com.android.quickstep.RecentsActivity" | awk '{ print $3 }' | sed "s|/.*||")
+defaultlauncherPath=$(grep -m1 -E "$defaultlauncherPackage.*codePath.*app" /data/system/packages.xml | sed -r "s/.*codePath=(.*)/\1/; s/\"//g" | awk '{ print $1 }')
+if [ ! $(echo $defaultlauncherPath | grep "/system/") ]; then
+  defaultlauncherPath="/system${defaultlauncherPath}"
+fi
 
 abort() {
   echo "qsError: $1"
@@ -56,12 +62,12 @@ abortexit() {
 
 # Functions to check if dirs is mounted
 is_mounted() {
-  grep " `readlink -f $1` " /proc/mounts 2>/dev/null
+  grep " $(readlink -f $1) " /proc/mounts 2>/dev/null
   return $?
 }
 
 is_mounted_rw() {
-  grep " `readlink -f $1` " /proc/mounts | grep " rw," 2>/dev/null
+  grep " $(readlink -f $1) " /proc/mounts | grep " rw," 2>/dev/null
   return $?
 }
 
@@ -76,51 +82,57 @@ unmount_rw() {
   fi
 }
 
-set_perms(){
+set_perms() {
   echo "\nSetting permissions..."
-  chmod 644 $STEPDIR/*; chown 0:2000 $STEPDIR
+  chmod 644 $STEPDIR/*
+  chown 0:2000 $STEPDIR
   if [ ! "$1" == "com.android.systemui" ]; then
-    chmod 755 $MODDIR/system/etc/; chmod 644 $PERMISSIONXMLDIR/*
-    chmod 644 $WHITELISTXMLDIR/*;  chmod 755 $SYSTEMIZE_TARGET/*
+    chmod 755 $MODDIR/system/etc/
+    chmod 644 $PERMISSIONXMLDIR/*
+    chmod 644 $WHITELISTXMLDIR/*
+    chmod 755 $SYSTEMIZE_TARGET/*
     chmod 644 $SYSTEMIZE_TARGET/*/*
   fi
 }
 
-get_logs(){
+get_logs() {
   overlaylog=$(cmd overlay dump xyz.paphonb.quickswitch.overlay)
   if [ "$overlaylog" ]; then
-    echo "$overlaylog" > $MODDIR/logs/$ID-overlays.log
+    echo "$overlaylog" >$MODDIR/logs/$ID-overlays.log
   else
-    echo "Overlay not found" > $MODDIR/logs/$ID-overlays.log
+    echo "Overlay not found" >$MODDIR/logs/$ID-overlays.log
   fi
-  echo "---Device Info---" > $MODDIR/logs/$ID-vars.log
-  grep "^ro.product.device[^#]" /system/build.prop | \
-    sed 's/ro.product.device/DeviceCode/g' >> $MODDIR/logs/$ID-vars.log
-  grep "^ro.product.model[^#]" /system/build.prop | \
-    sed 's/ro.product.model/DeviceName/g' >> $MODDIR/logs/$ID-vars.log
-  grep "^ro.build.type[^#]" /system/build.prop | \
-    sed 's/ro.build.type/BuildType/g' >> $MODDIR/logs/$ID-vars.log
-  grep "^ro.build.version.security_patch[^#]" /system/build.prop | \
+  echo "---Device Info---" >$MODDIR/logs/$ID-vars.log
+  grep "^ro.product.device[^#]" /system/build.prop |
+    sed 's/ro.product.device/DeviceCode/g' >>$MODDIR/logs/$ID-vars.log
+  grep "^ro.product.model[^#]" /system/build.prop |
+    sed 's/ro.product.model/DeviceName/g' >>$MODDIR/logs/$ID-vars.log
+  grep "^ro.build.type[^#]" /system/build.prop |
+    sed 's/ro.build.type/BuildType/g' >>$MODDIR/logs/$ID-vars.log
+  grep "^ro.build.version.security_patch[^#]" /system/build.prop |
     sed 's/ro.build.version.security_patch/SecurityPatch/g' \
-      >> $MODDIR/logs/$ID-vars.log
-  grep "^ro.product.cpu.abilist[^#]" /system/build.prop | \
-    sed 's/ro.product.cpu.abilist/Arch/g' >> $MODDIR/logs/$ID-vars.log
-  grep "^ro.build.version.sdk[^#]" /system/build.prop | \
-    sed 's/ro.build.version.sdk/APIVer/g' >> $MODDIR/logs/$ID-vars.log
-  grep "^ro.build.flavor[^#]" /system/build.prop | \
-    sed 's/ro.build.flavor/BuildFlavor/g' >> $MODDIR/logs/$ID-vars.log
-  echo "\n---ROM Info---" >> $MODDIR/logs/$ID-vars.log
-  grep "^ro.build.host[^#]" /system/build.prop | \
-    sed 's/ro.build.host/Host/g' >> $MODDIR/logs/$ID-vars.log
-  grep "^ro.*.device[^#]" /system/build.prop >> $MODDIR/logs/$ID-vars.log
-  echo -e "\n---Variables---" >> $MODDIR/logs/$ID-vars.log
-  ( set -o posix ; set ) >> $MODDIR/logs/$ID-vars.log
-  echo -e "\n---Magisk Version---" >> $MODDIR/logs/$ID-vars.log
-  echo `grep "MAGISK_VER_CODE=" /data/adb/magisk/util_functions.sh | \
-    sed "s/MAGISK_VER_CODE/MagiskVersion/"` >> $MODDIR/logs/$ID-vars.log
-  echo -e "\n---Module Version---" >> $MODDIR/logs/$ID-vars.log
-  echo `grep "versionCode=" $MODDIR/module.prop` >> $MODDIR/logs/$ID-vars.log
-  find $MODDIR > $MODDIR/logs/find.log
+      >>$MODDIR/logs/$ID-vars.log
+  grep "^ro.product.cpu.abilist[^#]" /system/build.prop |
+    sed 's/ro.product.cpu.abilist/Arch/g' >>$MODDIR/logs/$ID-vars.log
+  grep "^ro.build.version.sdk[^#]" /system/build.prop |
+    sed 's/ro.build.version.sdk/APIVer/g' >>$MODDIR/logs/$ID-vars.log
+  grep "^ro.build.flavor[^#]" /system/build.prop |
+    sed 's/ro.build.flavor/BuildFlavor/g' >>$MODDIR/logs/$ID-vars.log
+  echo "\n---ROM Info---" >>$MODDIR/logs/$ID-vars.log
+  grep "^ro.build.host[^#]" /system/build.prop |
+    sed 's/ro.build.host/Host/g' >>$MODDIR/logs/$ID-vars.log
+  grep "^ro.*.device[^#]" /system/build.prop >>$MODDIR/logs/$ID-vars.log
+  echo -e "\n---Variables---" >>$MODDIR/logs/$ID-vars.log
+  (
+    set -o posix
+    set
+  ) >>$MODDIR/logs/$ID-vars.log
+  echo -e "\n---Magisk Version---" >>$MODDIR/logs/$ID-vars.log
+  echo $(grep "MAGISK_VER_CODE=" /data/adb/magisk/util_functions.sh |
+    sed "s/MAGISK_VER_CODE/MagiskVersion/") >>$MODDIR/logs/$ID-vars.log
+  echo -e "\n---Module Version---" >>$MODDIR/logs/$ID-vars.log
+  echo $(grep "versionCode=" $MODDIR/module.prop) >>$MODDIR/logs/$ID-vars.log
+  find $MODDIR >$MODDIR/logs/find.log
 
   rm -rf /storage/emulated/0/Documents/$ID/*
   mkdir -p /storage/emulated/0/Documents/$ID
@@ -128,51 +140,65 @@ get_logs(){
   echo "\nLogs copied to /sdcard/Documents/$ID..."
 }
 
-setvars(){
+setvars() {
   SUFFIX="/overlay/QuickSwitchOverlay"
   if [ "$API" -ge 29 ]; then
     STEPDIR=$MODDIR/system/product$SUFFIX
     case "$(getprop ro.product.brand) $(getprop ro.product.manufacturer)" in
-      *samsung*) if [ ! -d /product/overlay ]; then
-                   STEPDIR=$MODDIR/system/vendor$SUFFIX
-                 fi;;
-      *OnePlus*) if [ "$API" -ge 31 ]; then
-                   if [ -d /system_ext/oplus ]; then
-                     STEPDIR=$MODDIR/system/vendor$SUFFIX
-                   else
-                     STEPDIR=$MODDIR/system/product$SUFFIX
-                   fi
-                 fi;;
-      *) PRODUCT=true
-          # Yay, magisk supports bind mounting /product now
-          MAGISK_VER_CODE=$(grep "MAGISK_VER_CODE=" /data/adb/magisk/util_functions.sh | awk -F = '{ print $2 }')
-          if [ $MAGISK_VER_CODE -ge "20000" ]; then
-            STEPDIR=$MODDIR/system/product$SUFFIX
-          else
-            abort "Magisk v20 is required for users on Android 10"
-            abortexit "Please update Magisk and try again."
-          fi;;
+    *samsung*)
+      if [ ! -d /product/overlay ]; then
+        STEPDIR=$MODDIR/system/vendor$SUFFIX
+      fi
+      ;;
+    *OnePlus*)
+      if [ "$API" -ge 31 ]; then
+        if [ -d /system_ext/oplus ]; then
+          STEPDIR=$MODDIR/system/vendor$SUFFIX
+        else
+          STEPDIR=$MODDIR/system/product$SUFFIX
+        fi
+      fi
+      ;;
+    *)
+      PRODUCT=true
+      # Yay, magisk supports bind mounting /product now
+      MAGISK_VER_CODE=$(grep "MAGISK_VER_CODE=" /data/adb/magisk/util_functions.sh | awk -F = '{ print $2 }')
+      if [ $MAGISK_VER_CODE -ge "20000" ]; then
+        STEPDIR=$MODDIR/system/product$SUFFIX
+      else
+        abort "Magisk v20 is required for users on Android 10"
+        abortexit "Please update Magisk and try again."
+      fi
+      ;;
     esac
   else
     SUFFIX="/overlay"
-    if [ -d /oem/OP ]; then
-      OEM=true
-      is_mounted " /oem" || mount /oem
-      is_mounted_rw " /oem" || mount_rw /oem
-      is_mounted " /oem/OP" || mount /oem/OP
-      is_mounted_rw " /oem/OP" || mount_rw /oem/OP
-      STEPDIR=/oem/OP/OPEN_US/overlay/framework
+    if [ -d /oem/OP -o -d /OP ]; then
+      case "$(getprop ro.product.manufacturer)" in
+      LGE)
+        OEM=true
+        mkdir -p $MODDIR/$defaultlauncherPath
+        touch $MODDIR/$defaultlauncherPath/.replace
+        if [ -d /oem/OP ]; then
+          STEPDIR=/oem/OP/OPEN_*/overlay/framework
+          is_mounted " /oem" || mount /oem
+          is_mounted_rw " /oem" || mount_rw /oem
+          is_mounted " /oem/OP" || mount /oem/OP
+          is_mounted_rw " /oem/OP" || mount_rw /oem/OP
+        elif [ -d /OP ]; then
+          STEPDIR=/OP/OPEN_*/overlay/framework
+          is_mounted " /OP" || mount /OP
+          is_mounted_rw " /OP" || mount_rw /OP
+        fi
+        # globs don't like to be quoted so we have to set the variable again without quotes first.
+        STEPDIR=$STEPDIR
+        ;;
+      esac
     else
-      PRODUCT=; OEM=
+      PRODUCT=
+      OEM=
       STEPDIR=$MODDIR/system/vendor$SUFFIX
     fi
-  fi
-
-  if [ "$OEM" ];then
-    is_mounted " /oem" || mount /oem
-    is_mounted_rw " /oem" || mount_rw /oem
-    is_mounted " /oem/OP" || mount /oem/OP
-    is_mounted_rw " /oem/OP" || mount_rw /oem/OP
   fi
 
   # Assign misc variables
@@ -181,32 +207,26 @@ setvars(){
   SYSTEMIZE_TARGET=$MODDIR/system/priv-app
 }
 
-reset_provider(){
-  setvars
-  rm -rf $MODDIR/system
-  rm -rf /data/resource-cache/overlays.list
-  find /data/resource-cache/ -name *QuickstepSwitcherOverlay* -exec rm -rf {} \;
-  find /data/resource-cache/ -name *QuickSwitchOverlay* -exec rm -rf {} \;
-}
-
-uninstall_overlay(){
+reset_provider() {
   setvars
   if [ "$OEM" ]; then
     rm -rf $STEPDIR/QuickSwitchOverlay.apk
   fi
+  rm -rf $MODDIR/system
   rm -rf /data/resource-cache/overlays.list
-  find /data/resource-cache/ -name *QuickstepSwitcherOverlay* -exec rm -rf {} \;
-  find /data/resource-cache/ -name *QuickSwitchOverlay* -exec rm -rf {} \;
+  find /data/resource-cache/ -name "*QuickstepSwitcherOverlay*" -exec rm -rf {} \;
+  find /data/resource-cache/ -name "*QuickSwitchOverlay*" -exec rm -rf {} \;
 }
 
-unmount_rw_stepdir(){
+unmount_rw_stepdir() {
   if [ "$OEM" ]; then
     is_mounted_rw " /oem" && unmount_rw /oem
     is_mounted_rw " /oem/OP" && unmount_rw /oem/OP
+    is_mounted_rw " /OP" && unmount_rw /OP
   fi
 }
 
-switch_providers(){
+switch_providers() {
   reset_provider
 
   echo "\nThe overlay will be copied to $STEPDIR..."
@@ -232,28 +252,28 @@ switch_providers(){
     cp -rf $APKPATH \
       $SYSTEMIZE_TARGET/QuickSwitch-"${1}"-"${RAND}"/QuickSwitch-"${1}"-"${RAND}".apk
 
-    perms=$(aapt d permissions $APKPATH | grep "uses-permission:" | \
-     sed -r "s|.*='(.*)'|\1|")
-    permissions=$(echo "$perms" | \
-     sed -re "s|  ||g; s|^|        <permission name=\"|; s|$|\"/>|")
+    perms=$(aapt d permissions $APKPATH | grep "uses-permission:" |
+      sed -r "s|.*='(.*)'|\1|")
+    permissions=$(echo "$perms" |
+      sed -re "s|  ||g; s|^|        <permission name=\"|; s|$|\"/>|")
 
     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 <permissions>
     <privapp-permissions package=\"${1}\">
 $permissions
     </privapp-permissions>
-</permissions>" > $PERMISSIONXMLDIR/privapp-permissions-$1.xml
+</permissions>" >$PERMISSIONXMLDIR/privapp-permissions-$1.xml
 
     echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 <config>
     <hidden-api-whitelisted-app package=\"${1}\"/>
-</config>" > $WHITELISTXMLDIR/$1-hiddenapi-package-whitelist.xml
+</config>" >$WHITELISTXMLDIR/$1-hiddenapi-package-whitelist.xml
 
     # Get logs for the patching process if the selected launcher is OnePlus Launcher
-    # If more launchers get patch functionality I'll make the package name a variable array which can easily be added to. 
+    # If more launchers get patch functionality I'll make the package name a variable array which can easily be added to.
     if [ "$1" == "net.oneplus.launcher" ]; then
-      echo $(logcat -d | grep "I Patcher") > $MODDIR/logs/$ID-Patcher.log
-    else
+      echo $(logcat -d | grep "I Patcher") >$MODDIR/logs/$ID-Patcher.log
+    elif [ -f "$MODDIR/logs/$ID-Patcher.log" ]; then
       rm $MODDIR/logs/$ID-Patcher.log
     fi
   fi
@@ -261,15 +281,15 @@ $permissions
   echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>
 <resources>
 	<string name=\"config_recentsComponentName\">$1/com.android.quickstep.RecentsActivity</string>
-</resources>" > $OVERLAYDIR/overlay/values/strings.xml
+</resources>" >$OVERLAYDIR/overlay/values/strings.xml
 
-if [ ! -z "$PLATFORMSIGNATURE" ]; then
-  cat "$PLATFORMSIGNATURE" > $OVERLAYDIR/overlay/values/arrays.xml
-fi
+  if [ ! -z "$PLATFORMSIGNATURE" ]; then
+    cat "$PLATFORMSIGNATURE" >$OVERLAYDIR/overlay/values/arrays.xml
+  fi
 
   aapt p -f -v -M ${OVERLAYDIR}/AndroidManifest.xml \
-                -I /system/framework/framework-res.apk -S ${OVERLAYDIR}/overlay/ \
-                -F ${MODDIR}/unsigned.apk &>$MODDIR/logs/aapt.log
+    -I /system/framework/framework-res.apk -S ${OVERLAYDIR}/overlay/ \
+    -F ${MODDIR}/unsigned.apk &>$MODDIR/logs/aapt.log
 
   if [ -s ${MODDIR}/unsigned.apk ]; then
     sign ${MODDIR}/unsigned.apk ${MODDIR}/signed.apk
@@ -290,24 +310,24 @@ fi
 
   set_perms $1
 
-# Lets save this for a rainy day
-#  SDK=$(getprop ro.build.version.sdk)
-#  SAMMY=$(getprop ro.product.brand)
+  # Lets save this for a rainy day
+  #  SDK=$(getprop ro.build.version.sdk)
+  #  SAMMY=$(getprop ro.product.brand)
 
-#  if [[ "$SDK" = 29 ]] && \
-#     [[ "$SAMMY" == *"samsung"* ]]; then
-#    for i in $(cmd overlay list | grep navbar | awk '{print $NF}' | \
-#        egrep -v com.samsung.internal.systemui.navbar.gestural_no_hint); do
-#      cmd overlay disable $i
-#    done
-#    cmd overlay enable com.samsung.internal.systemui.navbar.gestural_no_hint
-#  fi
+  #  if [[ "$SDK" = 29 ]] && \
+  #     [[ "$SAMMY" == *"samsung"* ]]; then
+  #    for i in $(cmd overlay list | grep navbar | awk '{print $NF}' | \
+  #        egrep -v com.samsung.internal.systemui.navbar.gestural_no_hint); do
+  #      cmd overlay disable $i
+  #    done
+  #    cmd overlay enable com.samsung.internal.systemui.navbar.gestural_no_hint
+  #  fi
 
-# lets not add this just yet as it can cause crashes in certain circumstances
-#  if [ ! "$1" == "com.android.systemui" ]; then
-#    echo "pm set-home-activity $1" > $MODDIR/service.sh
-#    echo 'rm -rf $0' >> $MODDIR/service.sh
-#  fi
+  # lets not add this just yet as it can cause crashes in certain circumstances
+  #  if [ ! "$1" == "com.android.systemui" ]; then
+  #    echo "pm set-home-activity $1" > $MODDIR/service.sh
+  #    echo 'rm -rf $0' >> $MODDIR/service.sh
+  #  fi
 }
 
 print_modname() {
@@ -335,17 +355,24 @@ for arg in $(echo ${@}); do
   opt1=$(echo $args | awk '{ print $1 }')
   opt2=$(echo $args | awk '{ print $2 }')
   case "$opt1" in
-    --reset) reset_provider
-      echo "The recents provider has been reset to default."
-      continue;;
-    --uninstall) reset_provider
-      uninstall_overlay
-      continue;;
-    --grid) resetprop ro.recents.grid true
-      echo "ro.recents.grid=true" >> $MODDIR/system.prop
-      continue;;
-    --ch) switch_providers "$opt2"
-      continue;;
+  --reset)
+    reset_provider
+    echo "The recents provider has been reset to default."
+    continue
+    ;;
+  --uninstall)
+    reset_provider
+    continue
+    ;;
+  --grid)
+    resetprop ro.recents.grid true
+    echo "ro.recents.grid=true" >>$MODDIR/system.prop
+    continue
+    ;;
+  --ch)
+    switch_providers "$opt2"
+    continue
+    ;;
   esac
 done
 

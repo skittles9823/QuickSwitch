@@ -1,6 +1,6 @@
-# QuickSwitch - Quickstep enabler for any supported launcher
+# QuickSwitch - Quickstep enabler for supported launchers
 
-QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep) in any supported launcher
+QuickSwitch is a Magisk module which systemlessly allows supported launchers to access the recents (QuickStep) APIs
 
 ![GitHub All Releases](https://img.shields.io/github/downloads/skittles9823/quickswitch/total?label=Downloads%20on%20GitHub)
 
@@ -9,19 +9,19 @@ QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep
 - If you wish to donate to [Paphonb](https://github.com/paphonb) for creating the QuickSwitch app you can do so [here](https://paypal.me/Paphonb).
 - Or if you wish to sponsor [Skittles9823](https://github.com/skittles9823) on GitHub for making the module, scripts, and handling support you can do so [here](https://github.com/sponsors/skittles9823).
 
-## Disclaimer
+## Notes:
 
-- A full list of compatible launchers will not be provided as the app autodetects which launchers are compatible.
+- QuickSwitch doesn't add support for launchers, launchers need to support QuickSwitch. Because of this, a full list of compatible launchers will not be provided as the app autodetects which launchers are compatible.
 - Nova will likely never support QuickSwitch unless they decide to add support for the Razer Phone natively.
 
 ## Requirements:
 
-- Magisk 18+ (Android 10 needs Magisk v20 or higher)
+- Latest version of Magisk
 - Android 9+
 
-## Installation
+## Installation:
 
-1. Install the QuickSwitch apk from the [Telegram channel](https://t.me/QuickstepSwitcherReleases) or [GitHub releases](https://github.com/skittles9823/QuickSwitch/releases).
+1. Install the latest QuickSwitch apk from the [Telegram channel](https://t.me/QuickstepSwitcherReleases) or [GitHub releases](https://github.com/skittles9823/QuickSwitch/releases).
 2. Open the QuickSwitch app that was installed.
 3. Select a different launcher as your recents provider.
 4. Reboot.
@@ -29,35 +29,46 @@ QuickSwitch is a Magisk module which systemlessly enables Pie recents (Quickstep
 6. Set the new recents provider as the default launcher.
 7. Profit.
 
-## Debugging
+## Debugging:
 
-- The script will save logs to /sdcard/Documents/quickstepswitcher whenever it detects the user wants to switch providers
-- All logs begin with **quickstepswitcher**
+- The app will save logs to /sdcard/Documents/quickswitch whenever it attempts to switch providers
+- All logs begin with **quickswitch**
 - If you have any issues, please join the [Telegram group](https://t.me/QuickstepSwitcherSupport) and send the logs along with what your issue is.
 
 ## Sources and used/needed tools:
 
 - [Module Source](https://github.com/skittles9823/QuickSwitch)
 - [Magisk](https://github.com/topjohnwu/Magisk) by [topjohnwu](https://forum.xda-developers.com/member.php?u=4470081)
-- [Magisk Module Template](https://github.com/topjohnwu/magisk-module-template) by [topjohnwu](https://forum.xda-developers.com/member.php?u=4470081)
 
-## Thanks to
+## Thanks to:
 
 - [Paphonb](https://github.com/paphonb), for being the main brains behind the module, creating the app, and much more.
 - [osm0sis](https://github.com/osm0sis) for assistance with getting 3.x.x to work without having to go permissive, and for his and [topjohnwu](https://github.com/topjohnwu)'s zipsigner
 - [The Lawnchair team](https://t.me/lawnchairci), for testing QuickSwitch.
 - [The Hyperion team](https://play.google.com/store/apps/details?id=projekt.launcher), for helping test QuickSwitch.
 
-## Support
+## Support:
 
 You can get support for the module in either the [Telegram group](https://t.me/QuickstepSwitcherSupport) or the [XDA Thread](https://forum.xda-developers.com/apps/magisk/module-quickswitch-universal-quickstep-t3884797/).
 
 ## Changelog:
 
-### v3.2.1
-- support Magisk 24's update.json format
+### v3.3.0
+### Note, this update will reset the current provider
+- better support some LG devices on Android 9
+- allow installation on MIUI 12.5+ (oops forgot the check was there)
+- remove sepolicy rules as they didn't help most of the time
+- increase overlay priority again
+- format scripts to be more readable
+- the QuickSwitch app will now correctly specify Android 12.1 instead of 12 where applicable
+- change module ID to `quickswitch`, order has been restored
+- for module developers who check for the modID, I'd recommend instead looking for the `/data/adb/modules/**/quickswitch` binary instead
+- update README to better explain the modules functionality
 
 <details><summary>Older changes</summary>
+
+### v3.2.1
+- support Magisk 24's update.json format
 
 ### v3.2.0
 - fix OOS for real
