@@ -1,7 +1,7 @@
 id=quickswitch
 name=QuickSwitch
-version=v3.3.0
-versionCode=3300
+version=v3.3.1
+versionCode=3310
 author=The Lawnchair team
 description=Quickstep enabler for supported launchers
 updateJson=https://raw.githubusercontent.com/skittles9823/QuickSwitch/master/QuickSwitch.json
