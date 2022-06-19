@@ -64,6 +64,7 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 - change module ID to `quickswitch`, order has been restored
 - for module developers who check for the modID, I'd recommend instead looking for the `/data/adb/modules/**/quickswitch` binary instead
 - update README to better explain the modules functionality
+- update the modules update-binary because it was 2 years outdated xd
 
 <details><summary>Older changes</summary>
 

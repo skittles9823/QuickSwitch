@@ -17,3 +17,4 @@ QuickSwitch is a Magisk module which systemlessly allows supported launchers to 
 - change module ID to `quickswitch`, order has been restored
 - for module developers who check for the modID, I'd recommend instead looking for the `/data/adb/modules/**/quickswitch` binary instead
 - update README to better explain the modules functionality
+- update the modules update-binary because it was 2 years outdated xd
