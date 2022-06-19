@@ -2,9 +2,11 @@
 
 QuickSwitch is a Magisk module which systemlessly allows supported launchers to access the recents (QuickStep) APIs
 
-![GitHub All Releases](https://img.shields.io/github/downloads/skittles9823/quickswitch/total?label=Downloads%20on%20GitHub)
-
 ## Changelog:
+
+### v3.3.1
+- lower overlay priority as it was too high for some devices
+- side note of an ommision from the 3.3.0 changelog, the app can detect conflicting quickstep modules so a high overlay priority is redundant
 
 ### v3.3.0
 ### Note, this update will reset the current provider
