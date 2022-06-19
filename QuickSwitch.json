@@ -1,6 +1,6 @@
 {
-    "version": "v3.3.0",
-    "versionCode": 3300,
+    "version": "v3.3.1",
+    "versionCode": 3310,
     "zipUrl": "https://github.com/skittles9823/QuickSwitch/releases/latest/download/QuickSwitch-Updater.zip",
     "changelog": "https://raw.githubusercontent.com/skittles9823/QuickSwitch/master/CHANGELOG.md"
-} 
+}
