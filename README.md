@@ -53,6 +53,10 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 
 ## Changelog:
 
+### v3.3.2
+- logging overlays now works correctly
+- raise overlay priority back to 1001 (oops, lowered it too much)
+
 ### v3.3.1
 - lower overlay priority as it was too high for some devices
 - side note of an ommision from the 3.3.0 changelog, the app can detect conflicting quickstep modules so a high overlay priority is redundant

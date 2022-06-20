@@ -18,10 +18,7 @@ MODDIR="$MOUNTPATH/$ID"
 cd $MODDIR
 
 # Set Log Files
-# > Logs should go in this file
 mkdir -p $MODDIR/logs
-LOG=$MODDIR/logs/$ID-STDERR.log
-oldLOG=$MODDIR/logs/$ID-old.log
 # > Verbose output goes here
 VERLOG=$MODDIR/logs/$ID-verbose.log
 oldVERLOG=$MODDIR/logs/$ID-verbose-old.log
@@ -29,7 +26,6 @@ oldVERLOG=$MODDIR/logs/$ID-verbose-old.log
 # Start Logging verbosely
 mv -f $VERLOG $oldVERLOG 2>/dev/null
 mv -f $LOG $oldLOG 2>/dev/null
-exec 2>$LOG
 set -x 2>$VERLOG
 
 ########
@@ -96,12 +92,7 @@ set_perms() {
 }
 
 get_logs() {
-  overlaylog=$(cmd overlay dump xyz.paphonb.quickswitch.overlay)
-  if [ "$overlaylog" ]; then
-    echo "$overlaylog" >$MODDIR/logs/$ID-overlays.log
-  else
-    echo "Overlay not found" >$MODDIR/logs/$ID-overlays.log
-  fi
+  echo "$(cmd overlay dump)" >$MODDIR/logs/$ID-overlays.log
   echo "---Device Info---" >$MODDIR/logs/$ID-vars.log
   grep "^ro.product.device[^#]" /system/build.prop |
     sed 's/ro.product.device/DeviceCode/g' >>$MODDIR/logs/$ID-vars.log
