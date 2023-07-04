@@ -61,9 +61,6 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 
 <details><summary>Older changes</summary>
 
-### v3.3.2
-
-
 ### v3.3.1
 - lower overlay priority as it was too high for some devices
 - side note of an ommision from the 3.3.0 changelog, the app can detect conflicting quickstep modules so a high overlay priority is redundant
