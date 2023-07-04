@@ -1,8 +1,22 @@
 #!/system/bin/sh
-# zipsigner: wrapper to run zipsigner.jar from terminal
+# zipsigner: wrapper to set up and run zipsigner.jar from terminal
 # osm0sis @ xda-developers
 
-dir="$(cd "$(dirname "$0")"; pwd)";
+case $# in
+1 | 3 | 5)
+    # when one argument less than needed assume the output name is missing and automatically set it to *-signed.*
+    eval n=\${$#}
+    set -- "$@" "$(echo $n | sed 's/\(.*\)\./\1-signed\./')"
+    ;;
+esac
 
-dalvikvm -Djava.io.tmpdir=. -Xnodex2oat -Xnoimage-dex2oat -cp $dir/zipsigner-*.jar com.topjohnwu.utils.ZipSigner "$@" 2>/dev/null \
- || dalvikvm -Djava.io.tmpdir=. -Xnoimage-dex2oat -cp $dir/zipsigner-*.jar com.topjohnwu.utils.ZipSigner "$@";
+if [ "$USER" == "root" ]; then
+    dir="$(
+        cd "$(dirname "$0")"
+        pwd
+    )"
+    dalvikvm -Djava.io.tmpdir=. -Xnodex2oat -Xnoimage-dex2oat -cp $dir/zipsigner-*.jar com.topjohnwu.utils.ZipSigner "$@" 2>/dev/null ||
+        dalvikvm -Djava.io.tmpdir=. -Xnoimage-dex2oat -cp $dir/zipsigner-*.jar com.topjohnwu.utils.ZipSigner "$@"
+else
+    echo "zipsigner: need root permissions"
+fi

@@ -12,7 +12,7 @@ ui_print "                   "
 ui_print " The Lawnchair Team"
 ui_print " "
 
-[ $BOOTMODE == "false" ] && abort "Installation failed! QuickSwitch must be installed via Magisk Manager!"
+[ $BOOTMODE == "false" ] && abort "Installation failed! QuickSwitch must be installed via Magisk/KernelSU Manager!"
 [ $API -lt "28" ] && abort "QuickSwitch is for Android Pie+ only"
 
 VEN=/system/vendor
@@ -72,7 +72,7 @@ fi
 # Nobody reads it anyway Sadge
 
 set_perm_recursive $MODPATH 0 0 0755 0644
-set_perm $MODPATH/aapt 0 2000 0755
+set_perm $MODPATH/aapt 2000 2000 0755
 set_perm $MODPATH/quickswitch 2000 2000 0777
 set_perm $MODPATH/zipsigner 0 0 0755
 set_perm $MODPATH/zipsigner-3.0-dexed.jar 0 0 0644

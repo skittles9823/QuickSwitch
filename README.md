@@ -53,9 +53,16 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 
 ## Changelog:
 
-### v3.3.2
+### v4.0.0
+- add KernelSU support
+- potential fix for appt not working
 - logging overlays now works correctly
-- raise overlay priority back to 1001 (oops, lowered it too much)
+- raise overlay priority back to 9999 (oops, lowered it too much)
+
+<details><summary>Older changes</summary>
+
+### v3.3.2
+
 
 ### v3.3.1
 - lower overlay priority as it was too high for some devices
@@ -73,8 +80,6 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 - for module developers who check for the modID, I'd recommend instead looking for the `/data/adb/modules/**/quickswitch` binary instead
 - update README to better explain the modules functionality
 - update the modules update-binary because it was 2 years outdated xd
-
-<details><summary>Older changes</summary>
 
 ### v3.2.1
 - support Magisk 24's update.json format

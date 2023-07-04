@@ -3,10 +3,10 @@
 # by veez21 @ xda-developers
 # Slimmed down for use as an app backend by @Skittles9823
 
-# Magisk Module ID
+# Module ID
 ID="quickswitch"
 
-# Magisk Mod Directory
+# Mod Directory
 if [ -d /data/adb/modules_update/$ID ]; then
   MOUNTPATH="/data/adb/modules_update"
 else
@@ -14,6 +14,12 @@ else
 fi
 MODDIR="$MOUNTPATH/$ID"
 [ ! -d $MODDIR ] && { exit 1; }
+
+if [ "$KSU" ]; then
+  BBDIR="/data/adb/ksu/bin/busybox"
+else
+  BBDIR="/data/adb/magisk/busybox"
+fi
 
 cd $MODDIR
 
@@ -32,7 +38,7 @@ set -x 2>$VERLOG
 # Main #
 ########
 API=$(getprop ro.build.version.sdk)
-PATH="/sbin/.magisk/busybox:/sbin/:$PATH"
+PATH="$BBDIR:/sbin/:$PATH"
 alias aapt='$MODDIR/aapt'
 alias sign='$MODDIR/zipsigner'
 OVERLAYDIR=$MODDIR/overlays
@@ -118,9 +124,13 @@ get_logs() {
     set -o posix
     set
   ) >>$MODDIR/logs/$ID-vars.log
-  echo -e "\n---Magisk Version---" >>$MODDIR/logs/$ID-vars.log
-  echo $(grep "MAGISK_VER_CODE=" /data/adb/magisk/util_functions.sh |
-    sed "s/MAGISK_VER_CODE/MagiskVersion/") >>$MODDIR/logs/$ID-vars.log
+  if [ -z "$KSU" ]; then
+    echo -e "\n---Magisk Version---" >>$MODDIR/logs/$ID-vars.log
+    echo $(grep "MAGISK_VER_CODE=" /data/adb/magisk/util_functions.sh |
+      sed "s/MAGISK_VER_CODE/MagiskVersion/") >>$MODDIR/logs/$ID-vars.log
+  else
+    echo -e "\n---KSU Version---\nKSUVersion=$KSU_VER" >>$MODDIR/logs/$ID-vars.log
+  fi
   echo -e "\n---Module Version---" >>$MODDIR/logs/$ID-vars.log
   echo $(grep "versionCode=" $MODDIR/module.prop) >>$MODDIR/logs/$ID-vars.log
   find $MODDIR >$MODDIR/logs/find.log
@@ -152,13 +162,17 @@ setvars() {
       ;;
     *)
       PRODUCT=true
-      # Yay, magisk supports bind mounting /product now
-      MAGISK_VER_CODE=$(grep "MAGISK_VER_CODE=" /data/adb/magisk/util_functions.sh | awk -F = '{ print $2 }')
-      if [ $MAGISK_VER_CODE -ge "20000" ]; then
-        STEPDIR=$MODDIR/system/product$SUFFIX
+      if [ -z $KSU ]; then
+        # Yay, magisk supports bind mounting /product now
+        MAGISK_VER_CODE=$(grep "MAGISK_VER_CODE=" /data/adb/magisk/util_functions.sh | awk -F = '{ print $2 }')
+        if [ $MAGISK_VER_CODE -ge "20000" ]; then
+          STEPDIR=$MODDIR/system/product$SUFFIX
+        else
+          abort "Magisk v20 is required for users on Android 10"
+          abortexit "Please update Magisk and try again."
+        fi
       else
-        abort "Magisk v20 is required for users on Android 10"
-        abortexit "Please update Magisk and try again."
+        STEPDIR=$MODDIR/system/product$SUFFIX
       fi
       ;;
     esac
@@ -367,7 +381,7 @@ for arg in $(echo ${@}); do
   esac
 done
 
-# If the script is called, then there is no reason for the magisk module to be disabled.
+# If the script is called, then there is no reason for the module to be disabled.
 # Let's make sure the module is enabled.
 rm -rf $MODDIR/disable
 
