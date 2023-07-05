@@ -7,13 +7,9 @@
 ID="quickswitch"
 
 # Mod Directory
-if [ -d /data/adb/modules_update/$ID ]; then
-  MOUNTPATH="/data/adb/modules_update"
-else
-  MOUNTPATH="/data/adb/modules"
-fi
-MODDIR="$MOUNTPATH/$ID"
-[ ! -d $MODDIR ] && { exit 1; }
+MODDIR=${0%/*}
+
+KSU=true # removed during install if false
 
 if [ "$KSU" ]; then
   BBDIR="/data/adb/ksu/bin/busybox"

@@ -53,6 +53,11 @@ find /data/resource-cache/ -name "*QuickSwitchOverlay*" -exec rm -rf {} \;
 MODULEDIR="/data/adb/modules/$MODID"
 MODVER=$(grep_prop versionCode $MODULEDIR/module.prop)
 
+# Check for KSU
+if [ -z "$KSU" ]; then
+  sed -i "/KSU=true*/d" $MODDIR/quickswitch
+fi
+
 rm -rf /data/adb/modules/quickstepswitcher # yeet old module dir
 
 if [ -d $MODULEDIR ]; then
