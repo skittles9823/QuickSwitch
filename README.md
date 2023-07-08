@@ -1,6 +1,6 @@
 # QuickSwitch - Quickstep enabler for supported launchers
 
-QuickSwitch is a Magisk module which systemlessly allows supported launchers to access the recents (QuickStep) APIs
+QuickSwitch is a Magisk/KernelSU module which systemlessly allows supported launchers to access the recents (QuickStep) APIs
 
 ![GitHub All Releases](https://img.shields.io/github/downloads/skittles9823/quickswitch/total?label=Downloads%20on%20GitHub)
 
@@ -16,7 +16,7 @@ QuickSwitch is a Magisk module which systemlessly allows supported launchers to 
 
 ## Requirements:
 
-- Latest version of Magisk
+- Latest version of Magisk or KernelSU
 - Android 9+
 
 ## Installation:
@@ -54,6 +54,7 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 ## Changelog:
 
 ### v4.0.0
+
 - add KernelSU support
 - potential fix for appt not working
 - logging overlays now works correctly
@@ -62,11 +63,14 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 <details><summary>Older changes</summary>
 
 ### v3.3.1
+
 - lower overlay priority as it was too high for some devices
 - side note of an ommision from the 3.3.0 changelog, the app can detect conflicting quickstep modules so a high overlay priority is redundant
 
 ### v3.3.0
+
 ### Note, this update will reset the current provider
+
 - better support some LG devices on Android 9
 - allow installation on MIUI 12.5+ (oops forgot the check was there)
 - remove sepolicy rules as they didn't help most of the time
@@ -79,15 +83,19 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 - update the modules update-binary because it was 2 years outdated xd
 
 ### v3.2.1
+
 - support Magisk 24's update.json format
 
 ### v3.2.0
+
 - fix OOS for real
 
 ### v3.1.9.1
+
 - move overlay to /vendor on OOS12+ (bruh moment)
 
 ### v3.1.8
+
 - mark launcher as compatible if version name is same as system
 - fix OnePlus display issues
 
