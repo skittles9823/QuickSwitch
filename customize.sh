@@ -27,7 +27,7 @@ if [ $MIUI ] && [ $API -lt "30" ]; then
 fi
 ui_print "- Extracting module files"
 
-unzip -o "$ZIPFILE" 'overlays/*' 'system/*' 'common/*' 'module.prop' 'system.prop' 'sepolicy.rule' 'zipsigner*' 'uninstall.sh' 'quickswitch' 'service.sh' -d $MODPATH >&2
+unzip -o "$ZIPFILE" 'overlays/*' 'system/*' 'common/*' 'module.prop' 'framework-res.apk' 'system.prop' 'sepolicy.rule' 'zipsigner*' 'uninstall.sh' 'quickswitch' 'service.sh' -d $MODPATH >&2
 chmod +x $MODPATH/common/*
 
 if [ -z "$NOAPK" ]; then
