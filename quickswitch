@@ -159,7 +159,7 @@ setvars() {
       ;;
     *)
       PRODUCT=true
-      if [ -z $KSU ]; then
+      if [ -z "$KSU" ]; then
         # Yay, magisk supports bind mounting /product now
         MAGISK_VER_CODE=$(grep "MAGISK_VER_CODE=" /data/adb/magisk/util_functions.sh | awk -F = '{ print $2 }')
         if [ $MAGISK_VER_CODE -ge "20000" ]; then
@@ -215,6 +215,10 @@ reset_provider() {
     rm -rf $STEPDIR/QuickSwitchOverlay.apk
   fi
   rm -rf $MODDIR/system
+  if [ "$KSU" ]; then
+    [ -d $MODDIR/product ] && rm -rf $MODDIR/product
+    [ -d $MODDIR/vendor ] && rm -rf $MODDIR/vendor
+  fi
   rm -rf /data/resource-cache/overlays.list
   find /data/resource-cache/ -name "*QuickstepSwitcherOverlay*" -exec rm -rf {} \;
   find /data/resource-cache/ -name "*QuickSwitchOverlay*" -exec rm -rf {} \;
@@ -232,6 +236,10 @@ switch_providers() {
   reset_provider
 
   echo "\nThe overlay will be copied to $STEPDIR..."
+
+  if [ "$KSU" ]; then
+    APKPATH=$(pm path $1 | sed "s|package:||")
+  fi
 
   # Create needed dirs
   while [ ! -d "$STEPDIR" ]; do

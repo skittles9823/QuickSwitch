@@ -21,13 +21,26 @@ QuickSwitch is a Magisk/KernelSU module which systemlessly allows supported laun
 
 ## Installation:
 
-1. Install the latest QuickSwitch apk from the [Telegram channel](https://t.me/QuickstepSwitcherReleases) or [GitHub releases](https://github.com/skittles9823/QuickSwitch/releases).
+## Magisk:
+
+1. Install the latest QuickSwitch zip from the [Telegram channel](https://t.me/QuickstepSwitcherReleases) or [GitHub releases](https://github.com/skittles9823/QuickSwitch/releases).
 2. Open the QuickSwitch app that was installed.
 3. Select a different launcher as your recents provider.
 4. Reboot.
 5. Verify your new recents provider is correct.
 6. Set the new recents provider as the default launcher.
 7. Profit.
+
+## KSU/APatch:
+
+1. Install the latest QuickSwitch zip from the [Telegram channel](https://t.me/QuickstepSwitcherReleases) or [GitHub releases](https://github.com/skittles9823/QuickSwitch/releases).
+2. Open a terminal app and `su`
+3. if running on APatch paste you'll need to run this before step 4: `export KSU=true`
+4. run `/data/adb/modules/quickswitch/quickswitch --ch=launcher.package.name`
+5. Reboot.
+6. Verify your new recents provider is correct.
+7. Set the new recents provider as the default launcher.
+8. Profit.
 
 ## Debugging:
 
@@ -52,6 +65,11 @@ QuickSwitch is a Magisk/KernelSU module which systemlessly allows supported laun
 You can get support for the module in either the [Telegram group](https://t.me/QuickstepSwitcherSupport) or the [XDA Thread](https://forum.xda-developers.com/apps/magisk/module-quickswitch-universal-quickstep-t3884797/).
 
 ## Changelog:
+
+### v4.0.1
+
+- Revert embed framework-res
+- I forgor to add some KSU stuff from the 3.3.7 test zips
 
 ### v4.0.0
 

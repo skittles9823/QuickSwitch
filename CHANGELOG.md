@@ -4,7 +4,13 @@ QuickSwitch is a Magisk module which systemlessly allows supported launchers to 
 
 ## Changelog:
 
+### v4.0.1
+
+- Revert embed framework-res
+- I forgor to add some KSU stuff from the 3.3.7 test zips
+
 ### v4.0.0
+
 - add KernelSU support
 - potential fix for appt not working
 - logging overlays now works correctly
