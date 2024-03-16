@@ -35,7 +35,7 @@ QuickSwitch is a Magisk/KernelSU module which systemlessly allows supported laun
 
 1. Install the latest QuickSwitch zip from the [Telegram channel](https://t.me/QuickstepSwitcherReleases) or [GitHub releases](https://github.com/skittles9823/QuickSwitch/releases).
 2. Open a terminal app and `su`
-3. if running on APatch paste you'll need to run this before step 4: `export KSU=true`
+3. if running on APatch you'll need to run this before step 4: `export KSU=true`
 4. run `/data/adb/modules/quickswitch/quickswitch --ch=launcher.package.name`
 5. Reboot.
 6. Verify your new recents provider is correct.
