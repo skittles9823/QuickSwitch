@@ -298,7 +298,7 @@ $permissions
   fi
 
   aapt p -f -v -M ${OVERLAYDIR}/AndroidManifest.xml \
-    -I /system/framework/framework-res.apk -S ${OVERLAYDIR}/overlay/ \
+    -I ${MODDIR}/framework-res.apk -S ${OVERLAYDIR}/overlay/ \
     -F ${MODDIR}/unsigned.apk &>$MODDIR/logs/aapt.log
 
   if [ -s ${MODDIR}/unsigned.apk ]; then
