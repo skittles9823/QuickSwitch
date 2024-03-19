@@ -15,8 +15,8 @@ if [ "$USER" == "root" ]; then
         cd "$(dirname "$0")"
         pwd
     )"
-    dalvikvm -Djava.io.tmpdir=. -Xnodex2oat -Xnoimage-dex2oat -cp $dir/zipsigner-*.jar com.topjohnwu.utils.ZipSigner "$@" 2>/dev/null ||
-        dalvikvm -Djava.io.tmpdir=. -Xnoimage-dex2oat -cp $dir/zipsigner-*.jar com.topjohnwu.utils.ZipSigner "$@"
+    /apex/com.android.art/bin/dalvikvm -Djava.io.tmpdir=. -Xnodex2oat -Xnoimage-dex2oat -cp $dir/zipsigner-*.jar com.topjohnwu.utils.ZipSigner "$@" 2>/dev/null
+ || /apex/com.android.art/bin/dalvikvm -Djava.io.tmpdir=. -Xnoimage-dex2oat -cp $dir/zipsigner-*.jar com.topjohnwu.utils.ZipSigner "$@"
 else
     echo "zipsigner: need root permissions"
 fi

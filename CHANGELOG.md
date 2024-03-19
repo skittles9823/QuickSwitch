@@ -4,6 +4,11 @@ QuickSwitch is a Magisk module which systemlessly allows supported launchers to 
 
 ## Changelog:
 
+### 4.0.2
+
+- unrevert embed framework-res
+- add sepolicy to fix `pm path` (Thanks Jan from the telegram group)
+
 ### v4.0.1
 
 - Revert embed framework-res

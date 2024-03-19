@@ -66,6 +66,11 @@ You can get support for the module in either the [Telegram group](https://t.me/Q
 
 ## Changelog:
 
+### 4.0.2
+
+- unrevert embed framework-res
+- add sepolicy to fix `pm path` (Thanks Jan from the telegram group)
+
 ### v4.0.1
 
 - Revert embed framework-res
