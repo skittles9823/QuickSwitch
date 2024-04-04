@@ -27,7 +27,7 @@ if [ $MIUI ] && [ $API -lt "30" ]; then
 fi
 ui_print "- Extracting module files"
 
-unzip -o "$ZIPFILE" 'overlays/*' 'system/*' 'common/*' 'module.prop' 'framework-res.apk' 'system.prop' 'sepolicy.rule' 'zipsigner*' 'uninstall.sh' 'quickswitch' 'service.sh' -d $MODPATH >&2
+unzip -o "$ZIPFILE" 'overlays/*' 'system/*' 'common/*' 'module.prop' 'system.prop' 'sepolicy.rule' 'zipsigner*' 'uninstall.sh' 'quickswitch' 'service.sh' -d $MODPATH >&2
 chmod +x $MODPATH/common/*
 
 if [ -z "$NOAPK" ]; then
@@ -37,10 +37,11 @@ if [ -z "$NOAPK" ]; then
   rm -rf /data/local/tmp/QuickSwitch.apk
 fi
 
-[ "$($MODPATH/common/aaptx86 v)" ] && AAPT=aaptx86
-[ "$($MODPATH/common/aapt v)" ] && AAPT=aapt
-[ "$($MODPATH/common/aapt64 v)" ] && AAPT=aapt64
-cp -af $MODPATH/common/$AAPT $MODPATH/aapt
+[ "$($MODPATH/common/aapt2_arm64-v8a version)" ] && AAPT2=aapt2_arm64-v8a
+[ "$($MODPATH/common/aapt2_armeabi-v7a version)" ] && AAPT2=aapt2_armeabi-v7a
+[ "$($MODPATH/common/aapt2_x86_64 version)" ] && AAPT2=aapt2_x86_64
+[ "$($MODPATH/common/aapt2_x86 version)" ] && AAPT2=aapt2_x86
+cp -af $MODPATH/common/$AAPT2 $MODPATH/aapt2
 rm -rf $MODPATH/common
 rm -rf /data/adb/service.d/quickswitch.sh
 rm -rf /data/adb/service.d/quickswitch-service.sh
@@ -77,7 +78,7 @@ fi
 # Nobody reads it anyway Sadge
 
 set_perm_recursive $MODPATH 0 0 0755 0644
-set_perm $MODPATH/aapt 2000 2000 0755
+set_perm $MODPATH/aapt2 2000 2000 0755
 set_perm $MODPATH/quickswitch 2000 2000 0777
 set_perm $MODPATH/zipsigner 0 0 0755
 set_perm $MODPATH/zipsigner-3.0-dexed.jar 0 0 0644
