@@ -39,12 +39,12 @@ set -x 2>$VERLOG
 ########
 API=$(getprop ro.build.version.sdk)
 PATH="$BBDIR:/sbin/:$PATH"
-alias aapt='$MODDIR/aapt'
+alias aapt2='$MODDIR/aapt2'
 alias sign='$MODDIR/zipsigner'
 OVERLAYDIR=$MODDIR/overlays
 RAND=$(echo $RANDOM | sed -r 's|^(...).*|\1|')
 DID_MOUNT_RW=
-defaultlauncherPackage=$(aapt d strings /system/framework/framework-res.apk | grep -m 1 "com.android.quickstep.RecentsActivity" | awk '{ print $3 }' | sed "s|/.*||")
+defaultlauncherPackage=$(aapt2 d strings /system/framework/framework-res.apk | grep -m 1 "com.android.quickstep.RecentsActivity" | awk '{ print $3 }' | sed "s|/.*||")
 defaultlauncherPath=$(grep -m1 -E "$defaultlauncherPackage.*codePath.*app" /data/system/packages.xml | sed -r "s/.*codePath=(.*)/\1/; s/\"//g" | awk '{ print $1 }')
 if [ ! $(echo $defaultlauncherPath | grep "/system/") ]; then
   defaultlauncherPath="/system${defaultlauncherPath}"
@@ -268,7 +268,7 @@ switch_providers() {
     cp -rf $APKPATH \
       $SYSTEMIZE_TARGET/QuickSwitch-"${1}"-"${RAND}"/QuickSwitch-"${1}"-"${RAND}".apk
 
-    perms=$(aapt d permissions $APKPATH | grep "uses-permission:" |
+    perms=$(aapt2 d permissions $APKPATH | grep "uses-permission:" |
       sed -r "s|.*='(.*)'|\1|")
     permissions=$(echo "$perms" |
       sed -re "s|  ||g; s|^|        <permission name=\"|; s|$|\"/>|")
@@ -303,9 +303,13 @@ $permissions
     cat "$PLATFORMSIGNATURE" >$OVERLAYDIR/overlay/values/arrays.xml
   fi
 
-  aapt p -f -v -M ${OVERLAYDIR}/AndroidManifest.xml \
-    -I ${MODDIR}/framework-res.apk -S ${OVERLAYDIR}/overlay/ \
-    -F ${MODDIR}/unsigned.apk &>$MODDIR/logs/aapt.log
+  rm -rf ${MODDIR}/compiled
+  mkdir ${MODDIR}/compiled
+  aapt2 compile -v --dir ${OVERLAYDIR}/overlay/ -o ${MODDIR}/compiled && \
+    aapt2 link -o ${MODDIR}/unsigned.apk -I /system/framework/framework-res.apk \
+    --manifest ${OVERLAYDIR}/AndroidManifest.xml ${MODDIR}/compiled/* \
+    &>$MODDIR/logs/aapt2.log
+  rm -rf ${MODDIR}/compiled
 
   if [ -s ${MODDIR}/unsigned.apk ]; then
     sign ${MODDIR}/unsigned.apk ${MODDIR}/signed.apk
