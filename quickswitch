@@ -243,9 +243,7 @@ switch_providers() {
 
   echo "\nThe overlay will be copied to $STEPDIR..."
 
-  if [ "$KSU" ] || [ "$APATCH" ]; then
-    APKPATH=$(pm path $1 | sed "s|package:||")
-  fi
+  APKPATH=$(pm path $1 | sed "s|package:||")
 
   # Create needed dirs
   while [ ! -d "$STEPDIR" ]; do
