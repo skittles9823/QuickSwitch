@@ -10,9 +10,13 @@ ID="quickswitch"
 MODDIR=${0%/*}
 
 KSU=true # removed during install if false
+APATCH=true # removed during install if false
 
 if [ "$KSU" ]; then
   BBDIR="/data/adb/ksu/bin/busybox"
+elif [ "$APATCH" ]; then
+  BBDIR="/data/adb/ap/bin/busybox"
+  APATCH_VER=$(cat /data/adb/ap/version)
 else
   BBDIR="/data/adb/magisk/busybox"
 fi
@@ -120,10 +124,12 @@ get_logs() {
     set -o posix
     set
   ) >>$MODDIR/logs/$ID-vars.log
-  if [ -z "$KSU" ]; then
+  if [ -z "$KSU" ] && [ -z "$APATCH" ]; then
     echo -e "\n---Magisk Version---" >>$MODDIR/logs/$ID-vars.log
     echo $(grep "MAGISK_VER_CODE=" /data/adb/magisk/util_functions.sh |
       sed "s/MAGISK_VER_CODE/MagiskVersion/") >>$MODDIR/logs/$ID-vars.log
+  elif [ "$APATCH" ]; then
+    echo -e "\n---APATCH Version---\nAPVersion=$APATCH_VER" >>$MODDIR/logs/$ID-vars.log
   else
     echo -e "\n---KSU Version---\nKSUVersion=$KSU_VER" >>$MODDIR/logs/$ID-vars.log
   fi
@@ -159,7 +165,7 @@ setvars() {
       ;;
     *)
       PRODUCT=true
-      if [ -z "$KSU" ]; then
+      if [ -z "$KSU" ] && [-z "$APATCH" ]; then
         # Yay, magisk supports bind mounting /product now
         MAGISK_VER_CODE=$(grep "MAGISK_VER_CODE=" /data/adb/magisk/util_functions.sh | awk -F = '{ print $2 }')
         if [ $MAGISK_VER_CODE -ge "20000" ]; then
@@ -215,7 +221,7 @@ reset_provider() {
     rm -rf $STEPDIR/QuickSwitchOverlay.apk
   fi
   rm -rf $MODDIR/system
-  if [ "$KSU" ]; then
+  if [ "$KSU" ] || [ "$APATCH" ] ; then
     [ -d $MODDIR/product ] && rm -rf $MODDIR/product
     [ -d $MODDIR/vendor ] && rm -rf $MODDIR/vendor
   fi
@@ -237,7 +243,7 @@ switch_providers() {
 
   echo "\nThe overlay will be copied to $STEPDIR..."
 
-  if [ "$KSU" ]; then
+  if [ "$KSU" ] || [ "$APATCH" ]; then
     APKPATH=$(pm path $1 | sed "s|package:||")
   fi
 

@@ -1,6 +1,6 @@
 # QuickSwitch - Quickstep enabler for supported launchers
 
-QuickSwitch is a Magisk/KernelSU module which systemlessly allows supported launchers to access the recents (QuickStep) APIs
+QuickSwitch is a Magisk/KernelSU/Apatch module which systemlessly allows supported launchers to access the recents (QuickStep) APIs
 
 ![GitHub All Releases](https://img.shields.io/github/downloads/skittles9823/quickswitch/total?label=Downloads%20on%20GitHub)
 
@@ -16,7 +16,7 @@ QuickSwitch is a Magisk/KernelSU module which systemlessly allows supported laun
 
 ## Requirements:
 
-- Latest version of Magisk or KernelSU
+- Latest version of Magisk or KernelSU or Apatch
 - Android 9+
 
 ## Installation:
@@ -35,12 +35,11 @@ QuickSwitch is a Magisk/KernelSU module which systemlessly allows supported laun
 
 1. Install the latest QuickSwitch zip from the [Telegram channel](https://t.me/QuickstepSwitcherReleases) or [GitHub releases](https://github.com/skittles9823/QuickSwitch/releases).
 2. Open a terminal app and `su`
-3. if running on APatch you'll need to run this before step 4: `export KSU=true`
-4. run `/data/adb/modules/quickswitch/quickswitch --ch=launcher.package.name`
-5. Reboot.
-6. Verify your new recents provider is correct.
-7. Set the new recents provider as the default launcher.
-8. Profit.
+3. run `/data/adb/modules/quickswitch/quickswitch --ch=launcher.package.name`
+4. Reboot.
+5. Verify your new recents provider is correct.
+6. Set the new recents provider as the default launcher.
+7. Profit.
 
 ## Debugging:
 
