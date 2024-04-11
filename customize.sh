@@ -55,7 +55,7 @@ MODVER=$(grep_prop versionCode $MODULEDIR/module.prop)
 
 # Check for KSU
 if [ -z "$KSU" ]; then
-  sed -i "/KSU=true*/d" $MODDIR/quickswitch
+  sed -i "/KSU=true*/d" $MODPATH/quickswitch
 fi
 
 rm -rf /data/adb/modules/quickstepswitcher # yeet old module dir
