@@ -37,11 +37,8 @@ if [ -z "$NOAPK" ]; then
   rm -rf /data/local/tmp/QuickSwitch.apk
 fi
 
-[ "$($MODPATH/common/aapt2_arm64-v8a version)" ] && AAPT2=aapt2_arm64-v8a
-[ "$($MODPATH/common/aapt2_armeabi-v7a version)" ] && AAPT2=aapt2_armeabi-v7a
-[ "$($MODPATH/common/aapt2_x86_64 version)" ] && AAPT2=aapt2_x86_64
-[ "$($MODPATH/common/aapt2_x86 version)" ] && AAPT2=aapt2_x86
-cp -af $MODPATH/common/$AAPT2 $MODPATH/aapt2
+AAPT2=aapt2_$(getprop ro.product.cpu.abi)
+cp -af $MODPATH/common/$AAPT2 $MODPATH/aapt2 || abort "Unsupported Arch!"
 rm -rf $MODPATH/common
 rm -rf /data/adb/service.d/quickswitch.sh
 rm -rf /data/adb/service.d/quickswitch-service.sh
