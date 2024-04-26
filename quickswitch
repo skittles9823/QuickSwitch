@@ -144,7 +144,11 @@ get_logs() {
 }
 
 setvars() {
-  [ $KSU ] && STEPDIRPREFIX=$MODDIR || STEPDIRPREFIX=$MODDIR/system
+  if [ -n "$KSU" ] || [ -n "$APATCH" ]; then
+    STEPDIRPREFIX=$MODDIR
+  else
+     STEPDIRPREFIX=$MODDIR/system
+  fi
   SUFFIX="/overlay/QuickSwitchOverlay"
   if [ "$API" -ge 29 ]; then
     STEPDIR=$STEPDIRPREFIX/product$SUFFIX
