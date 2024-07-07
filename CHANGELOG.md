@@ -4,6 +4,10 @@ QuickSwitch is a Magisk module which systemlessly allows supported launchers to 
 
 ## Changelog:
 
+### 4.0.3
+
+- Various fixes for KSU/Apatch by @j7b3y, @DrDisagree, and @ammargitham
+
 ### 4.0.2
 
 - unrevert embed framework-res
