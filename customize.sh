@@ -27,7 +27,7 @@ if [ $MIUI ] && [ $API -lt "30" ]; then
 fi
 ui_print "- Extracting module files"
 
-unzip -o "$ZIPFILE" 'overlays/*' 'system/*' 'common/*' 'module.prop' 'framework-res.apk' 'system.prop' 'sepolicy.rule' 'zipsigner*' 'uninstall.sh' 'quickswitch' 'service.sh' -d $MODPATH >&2
+unzip -o "$ZIPFILE" 'overlays/*' 'system/*' 'common/*' 'module.prop' 'system.prop' 'sepolicy.rule' 'zipsigner*' 'uninstall.sh' 'quickswitch' 'service.sh' -d $MODPATH >&2
 chmod +x $MODPATH/common/*
 
 if [ -z "$NOAPK" ]; then
@@ -37,10 +37,8 @@ if [ -z "$NOAPK" ]; then
   rm -rf /data/local/tmp/QuickSwitch.apk
 fi
 
-[ "$($MODPATH/common/aaptx86 v)" ] && AAPT=aaptx86
-[ "$($MODPATH/common/aapt v)" ] && AAPT=aapt
-[ "$($MODPATH/common/aapt64 v)" ] && AAPT=aapt64
-cp -af $MODPATH/common/$AAPT $MODPATH/aapt
+AAPT2=aapt2_$(getprop ro.product.cpu.abi)
+cp -af $MODPATH/common/$AAPT2 $MODPATH/aapt2 || abort "Unsupported Arch!"
 rm -rf $MODPATH/common
 rm -rf /data/adb/service.d/quickswitch.sh
 rm -rf /data/adb/service.d/quickswitch-service.sh
@@ -53,9 +51,13 @@ find /data/resource-cache/ -name "*QuickSwitchOverlay*" -exec rm -rf {} \;
 MODULEDIR="/data/adb/modules/$MODID"
 MODVER=$(grep_prop versionCode $MODULEDIR/module.prop)
 
-# Check for KSU
+# Check for root solution
 if [ -z "$KSU" ]; then
-  sed -i "/KSU=true*/d" $MODDIR/quickswitch
+  sed -i "/KSU=true*/d" $MODPATH/quickswitch
+fi
+
+if [ -z "$APATCH" ]; then
+  sed -i "/APATCH=true*/d" $MODPATH/quickswitch
 fi
 
 rm -rf /data/adb/modules/quickstepswitcher # yeet old module dir
@@ -77,7 +79,7 @@ fi
 # Nobody reads it anyway Sadge
 
 set_perm_recursive $MODPATH 0 0 0755 0644
-set_perm $MODPATH/aapt 2000 2000 0755
+set_perm $MODPATH/aapt2 2000 2000 0755
 set_perm $MODPATH/quickswitch 2000 2000 0777
 set_perm $MODPATH/zipsigner 0 0 0755
 set_perm $MODPATH/zipsigner-3.0-dexed.jar 0 0 0644
