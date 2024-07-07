@@ -9,7 +9,7 @@ ID="quickswitch"
 # Mod Directory
 MODDIR=${0%/*}
 
-KSU=true # removed during install if false
+KSU=true    # removed during install if false
 APATCH=true # removed during install if false
 
 if [ "$KSU" ]; then
@@ -147,7 +147,7 @@ setvars() {
   if [ -n "$KSU" ] || [ -n "$APATCH" ]; then
     STEPDIRPREFIX=$MODDIR
   else
-     STEPDIRPREFIX=$MODDIR/system
+    STEPDIRPREFIX=$MODDIR/system
   fi
   SUFFIX="/overlay/QuickSwitchOverlay"
   if [ "$API" -ge 29 ]; then
@@ -225,7 +225,7 @@ reset_provider() {
     rm -rf $STEPDIR/QuickSwitchOverlay.apk
   fi
   rm -rf $MODDIR/system
-  if [ "$KSU" ] || [ "$APATCH" ] ; then
+  if [ "$KSU" ] || [ "$APATCH" ]; then
     [ -d $MODDIR/product ] && rm -rf $MODDIR/product
     [ -d $MODDIR/vendor ] && rm -rf $MODDIR/vendor
   fi
@@ -247,7 +247,9 @@ switch_providers() {
 
   echo "\nThe overlay will be copied to $STEPDIR..."
 
-  APKPATH=$(pm path $1 | sed "s|package:||")
+  if [ "$KSU" ] || [ "$APATCH" ]; then
+    APKPATH=$(pm path $1 | sed "s|package:||")
+  fi
 
   # Create needed dirs
   while [ ! -d "$STEPDIR" ]; do
@@ -309,8 +311,8 @@ $permissions
   mkdir ${MODDIR}/compiled
   aapt2 compile -v --dir ${OVERLAYDIR}/overlay/ -o ${MODDIR}/compiled && \
     aapt2 link -o ${MODDIR}/unsigned.apk -I /system/framework/framework-res.apk \
-    --manifest ${OVERLAYDIR}/AndroidManifest.xml ${MODDIR}/compiled/* \
-    &>$MODDIR/logs/aapt2.log
+      --manifest ${OVERLAYDIR}/AndroidManifest.xml ${MODDIR}/compiled/* \
+      &>$MODDIR/logs/aapt2.log
   rm -rf ${MODDIR}/compiled
 
   if [ -s ${MODDIR}/unsigned.apk ]; then
